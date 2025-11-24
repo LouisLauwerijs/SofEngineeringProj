@@ -12,6 +12,6 @@ namespace projectSoftwareEngineering
     {
         void Update(GameTime gametime);
         void Draw(SpriteBatch spriteBatch);
-        void Run(GameTime gameTime);
+        
     }
 }
