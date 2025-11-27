@@ -29,6 +29,7 @@ namespace projectSoftwareEngineering
             {
                 Idle = BuildIdleAnimation(),
                 Run = BuildRunAnimation(),
+                Jump = BuildJumpAnimation()
             };
 
             currentAnimation = animations.Idle;
@@ -48,9 +49,20 @@ namespace projectSoftwareEngineering
 
             return anim;
         }
+        private Animation BuildJumpAnimation()
+        {
+            Animation anim = new Animation();
+            anim.AddFrame(new AnimationFrame(new Rectangle(0, 256, 64, 64)));
+            anim.AddFrame(new AnimationFrame(new Rectangle(64, 256, 64, 64)));
+            anim.AddFrame(new AnimationFrame(new Rectangle(128, 256, 64, 64)));
+            anim.AddFrame(new AnimationFrame(new Rectangle(192, 256, 64, 64)));
+
+            return anim;
+        }
         private Animation BuildIdleAnimation()
         {
             Animation anim = new Animation();
+
             anim.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
             anim.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
             anim.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
@@ -102,6 +114,16 @@ namespace projectSoftwareEngineering
                 isRunning = true;
             }
 
+            //Jump
+            if (k.IsKeyDown(Keys.Space))
+            {
+                snelheid.X = 0;
+                positie += snelheid;
+
+                currentAnimation = animations.Jump;
+                isRunning = true;
+            }
+
             // No movement → Idle
             if (!isRunning)
             {
@@ -109,11 +131,5 @@ namespace projectSoftwareEngineering
                 currentAnimation = animations.Idle;
             }
         }
-
-        public void Jump()
-        {
-
-        }
-
     }
 }

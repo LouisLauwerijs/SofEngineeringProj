@@ -10,5 +10,6 @@ namespace projectSoftwareEngineering
     {
         public Animation Idle { get; set; }
         public Animation Run { get; set; }
+        public Animation Jump { get; set; }
     }
 }
