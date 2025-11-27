@@ -41,8 +41,6 @@ namespace projectSoftwareEngineering
                 virtualWidth,
                 virtualHeight
             );
-
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -69,7 +67,6 @@ namespace projectSoftwareEngineering
             GraphicsDevice.SetRenderTarget(null);
 
             // 3. Draw the low-res result stretched to the window
-            GraphicsDevice.Clear(Color.Black); // optional
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             _spriteBatch.Draw(
                 renderTarget,

@@ -18,7 +18,7 @@ namespace projectSoftwareEngineering
         private Animation currentAnimation;
 
         // Movement data
-        private Vector2 positie;
+        private Vector2 positie = new Vector2(0, 50);
         private Vector2 snelheid = new Vector2(3, 0);
 
         public Hero(Texture2D texture)
@@ -77,7 +77,6 @@ namespace projectSoftwareEngineering
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, positie, currentAnimation.GetCurrentFrameRectangle(), Color.White, 0f, Vector2.Zero, 1f, direction, 0f);
-
         }
 
         public void Update(GameTime gametime)
