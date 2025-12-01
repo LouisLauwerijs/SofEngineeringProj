@@ -18,8 +18,15 @@ namespace projectSoftwareEngineering
         private Animation currentAnimation;
 
         // Movement data
-        private Vector2 positie = new Vector2(0, 50);
+        private Vector2 positie = new Vector2(0, 85);
         private Vector2 snelheid = new Vector2(3, 0);
+
+        //jump
+        private float velocityY = 0f;
+        private float gravity = 0.4f;
+        private float jumpStrength = -7.5f;
+        private bool isJumping = false;
+        private float groundLevel = 85;
 
         public Hero(Texture2D texture)
         {
@@ -82,6 +89,19 @@ namespace projectSoftwareEngineering
         public void Update(GameTime gametime)
         {
             HandleInput();
+            if (isJumping)
+            {
+                velocityY += gravity;
+                positie.Y += velocityY;
+            }
+
+            //grounded check
+            if (positie.Y >= groundLevel)
+            {
+                positie.Y = groundLevel;
+                velocityY = 0;
+                isJumping = false;
+            }
             currentAnimation.Update(gametime);
         }
 
@@ -98,7 +118,8 @@ namespace projectSoftwareEngineering
                 direction = SpriteEffects.None;
                 positie += snelheid;
 
-                currentAnimation = animations.Run;
+                if (!isJumping) 
+                    currentAnimation = animations.Run;
                 isRunning = true;
             }
 
@@ -109,18 +130,17 @@ namespace projectSoftwareEngineering
                 direction = SpriteEffects.FlipHorizontally;
                 positie += snelheid;
 
-                currentAnimation = animations.Run;
+                if (!isJumping) 
+                    currentAnimation = animations.Run;
                 isRunning = true;
             }
 
             //Jump
-            if (k.IsKeyDown(Keys.Space))
+            if (k.IsKeyDown(Keys.Space) && !isJumping)
             {
-                snelheid.X = 0;
-                positie += snelheid;
-
+                isJumping = true;
+                velocityY = jumpStrength;
                 currentAnimation = animations.Jump;
-                isRunning = true;
             }
 
             // No movement → Idle
