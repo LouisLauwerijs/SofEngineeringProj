@@ -21,6 +21,7 @@ namespace projectSoftwareEngineering
         private Vector2 positie = new Vector2(0, 85);
         private Vector2 snelheid = new Vector2(3, 0);
 
+
         //jump
         private float velocityY = 0f;
         private float gravity = 0.4f;
@@ -84,6 +85,7 @@ namespace projectSoftwareEngineering
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, positie, currentAnimation.GetCurrentFrameRectangle(), Color.White, 0f, Vector2.Zero, 1f, direction, 0f);
+            
         }
 
         public void Update(GameTime gametime)
@@ -120,6 +122,7 @@ namespace projectSoftwareEngineering
 
                 if (!isJumping) 
                     currentAnimation = animations.Run;
+
                 isRunning = true;
             }
 
@@ -143,7 +146,7 @@ namespace projectSoftwareEngineering
                 currentAnimation = animations.Jump;
             }
 
-            // No movement → Idle
+            //Idle
             if (!isRunning)
             {
                 snelheid.X = 0;

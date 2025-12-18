@@ -1,7 +1,9 @@
-﻿using System.Net.Mime;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Net.Mime;
+using static System.Formats.Asn1.AsnWriter;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace projectSoftwareEngineering
 {
@@ -13,11 +15,11 @@ namespace projectSoftwareEngineering
         //sprites
         private Texture2D _heroTexture;
         private Hero hero;
+        private Texture2D _test;
 
         RenderTarget2D renderTarget;
         int virtualWidth = 320;   // smaller render size
         int virtualHeight = 180;  // smaller render size
-
 
         public Game1()
         {
