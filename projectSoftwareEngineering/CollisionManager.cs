@@ -16,12 +16,11 @@ namespace projectSoftwareEngineering
 
         public bool IsStandingOnGroud(Rectangle characterBounds, List<ICollidable> platforms)
         {
-            // Check if character is standing on any platform
             Rectangle floorCheck = new Rectangle(
                 characterBounds.X + 5,
-                characterBounds.Bottom,
+                characterBounds.Bottom - 2,
                 characterBounds.Width - 10,
-                2
+                4
             );
 
             foreach (var platform in platforms)
@@ -36,10 +35,11 @@ namespace projectSoftwareEngineering
 
         public void FloorCollisionCheck(Physics physics, List<ICollidable> platforms)
         {
+            //Player's hitbox, so change if changed in hero.cs
             Rectangle bounds = new Rectangle(
-                (int)physics.Position.X,
-                (int)physics.Position.Y,
-                64, 64
+                (int)physics.Position.X + 18,
+                (int)physics.Position.Y + 18,
+                28, 32
             );
 
             foreach (var platform in platforms)
@@ -53,7 +53,7 @@ namespace projectSoftwareEngineering
                     {
                         physics.Position = new Vector2(
                             physics.Position.X,
-                            platform.Bounds.Top - 64
+                            platform.Bounds.Top - 32-18
                         );
                         physics.Velocity = new Vector2(physics.Velocity.X, 0);
                         physics.IsGrounded = true;
@@ -63,7 +63,7 @@ namespace projectSoftwareEngineering
                     {
                         physics.Position = new Vector2(
                             physics.Position.X,
-                            platform.Bounds.Bottom
+                            platform.Bounds.Bottom - 18
                         );
                         physics.Velocity = new Vector2(physics.Velocity.X, 0);
                     }
@@ -74,9 +74,9 @@ namespace projectSoftwareEngineering
         public void WallCollisionCheck(Physics physics, List<ICollidable> platforms)
         {
             Rectangle bounds = new Rectangle(
-                (int)physics.Position.X,
-                (int)physics.Position.Y,
-                64, 64
+                (int)physics.Position.X + 18,
+                (int)physics.Position.Y + 18,
+                28, 32
             );
 
             foreach (var platform in platforms)
@@ -89,7 +89,7 @@ namespace projectSoftwareEngineering
                     if (physics.Velocity.X > 0)
                     {
                         physics.Position = new Vector2(
-                            platform.Bounds.Left - 64,
+                            platform.Bounds.Left - 28 - 18,
                             physics.Position.Y
                         );
                     }
@@ -97,7 +97,7 @@ namespace projectSoftwareEngineering
                     else if (physics.Velocity.X < 0)
                     {
                         physics.Position = new Vector2(
-                            platform.Bounds.Right,
+                            platform.Bounds.Right - 18,
                             physics.Position.Y
                         );
                     }

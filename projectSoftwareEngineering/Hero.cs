@@ -21,10 +21,10 @@ namespace projectSoftwareEngineering
         private SpriteEffects _direction = SpriteEffects.None;
 
         public Rectangle Bounds => new Rectangle(
-            (int)_physics.Position.X,
-            (int)_physics.Position.Y,
-            64, 64
-            );
+            (int)_physics.Position.X+18,
+            (int)_physics.Position.Y+18,
+            28, 32
+        );
 
         public bool IsSolid => false;
 
@@ -48,22 +48,19 @@ namespace projectSoftwareEngineering
 
         public void Update(GameTime gameTime, List<ICollidable> platforms)
         {
-            _physics.IsGrounded = false;
-
             HandleMovement();
 
-            // Apply gravity
             _physics.ApplyGravity();
 
-            // Update vertical position and check collisions
             _physics.UpdateVerticalPosition();
             _collisionManager.FloorCollisionCheck(_physics, platforms);
 
-            // Check horizontal collisions
             _collisionManager.WallCollisionCheck(_physics, platforms);
 
-            // Check if on ground
-            _physics.IsGrounded = _collisionManager.IsStandingOnGroud(Bounds, platforms);
+            if (_physics.Velocity.Y >= 0) 
+            {
+                _physics.IsGrounded = _collisionManager.IsStandingOnGroud(Bounds, platforms);
+            }
 
             UpdateAnimation();
             _animationController.Update(gameTime);
@@ -75,6 +72,8 @@ namespace projectSoftwareEngineering
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            
+
             spriteBatch.Draw(
                 _texture,
                 _physics.Position,
