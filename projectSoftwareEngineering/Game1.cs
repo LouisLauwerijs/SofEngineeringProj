@@ -14,12 +14,11 @@ namespace projectSoftwareEngineering
 
         //sprites
         private Texture2D _heroTexture;
-        private Hero hero;
-        private Texture2D _test;
+        private Hero _hero;
 
         RenderTarget2D renderTarget;
-        int virtualWidth = 320;   // smaller render size
-        int virtualHeight = 180;  // smaller render size
+        int virtualWidth = 300;  
+        int virtualHeight = 160;   
 
         public Game1()
         {
@@ -31,7 +30,6 @@ namespace projectSoftwareEngineering
         protected override void Initialize()
         {
             base.Initialize();
-            hero = new Hero(_heroTexture);
         }
 
         protected override void LoadContent()
@@ -43,6 +41,10 @@ namespace projectSoftwareEngineering
                 virtualWidth,
                 virtualHeight
             );
+
+            var inputHandler = new KeyboardInputChecker();
+            var heroConfig = new HeroConfig(); 
+            _hero = new Hero(_heroTexture, inputHandler, heroConfig);
         }
 
         protected override void Update(GameTime gameTime)
@@ -50,25 +52,22 @@ namespace projectSoftwareEngineering
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            hero.Update(gameTime);
+            _hero.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            // 1. Draw to the low-res render target
             GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
-            hero.Draw(_spriteBatch);
+            _hero.Draw(_spriteBatch);
             _spriteBatch.End();
 
-            // 2. Switch back to the window
             GraphicsDevice.SetRenderTarget(null);
 
-            // 3. Draw the low-res result stretched to the window
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             _spriteBatch.Draw(
                 renderTarget,

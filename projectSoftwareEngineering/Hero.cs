@@ -6,151 +6,108 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using projectSoftwareEngineering.Animations;
 
 namespace projectSoftwareEngineering
 {
-    internal class Hero : IGameObject
+    public class Hero : IGameObject
     {
-        private Texture2D texture;
-        private SpriteEffects direction = SpriteEffects.None;
+        private readonly Texture2D _texture;
+        private readonly IInputChecker _inputHandler;
+        private readonly Physics _physics;
+        private readonly AnimationController _animationController;
 
-        private AnimationSet animations;
-        private Animation currentAnimation;
+        private SpriteEffects _direction = SpriteEffects.None;
 
-        // Movement data
-        private Vector2 positie = new Vector2(0, 85);
-        private Vector2 snelheid = new Vector2(3, 0);
-
-
-        //jump
-        private float velocityY = 0f;
-        private float gravity = 0.4f;
-        private float jumpStrength = -7.5f;
-        private bool isJumping = false;
-        private float groundLevel = 85;
-
-        public Hero(Texture2D texture)
+        // Dependency Injection (Dependency Inversion Principle)
+        public Hero(Texture2D texture, IInputChecker inputHandler, HeroConfig config)
         {
-            this.texture = texture;
+            _texture = texture;
+            _inputHandler = inputHandler;
 
-            animations = new AnimationSet()
-            {
-                Idle = BuildIdleAnimation(),
-                Run = BuildRunAnimation(),
-                Jump = BuildJumpAnimation()
-            };
+            // Create components with injected configuration
+            _physics = new Physics(
+                config.StartPosition,
+                config.Gravity,
+                config.JumpStrength,
+                config.MoveSpeed,
+                config.GroundLevel
+            );
 
-            currentAnimation = animations.Idle;
+            _animationController = new AnimationController(AnimationFactory.CreateHeroAnimations());
         }
-        private Animation BuildRunAnimation()
+
+        public void Update(GameTime gameTime)
         {
-            Animation anim = new Animation();
-
-            anim.AddFrame(new AnimationFrame(new Rectangle(0, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(64, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(128, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(192, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(256, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(320, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(384, 64, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(448, 64, 64, 64)));
-
-            return anim;
+            HandleMovement();
+            UpdatePhysics();
+            UpdateAnimation();
+            _animationController.Update(gameTime);
         }
-        private Animation BuildJumpAnimation()
-        {
-            Animation anim = new Animation();
-            anim.AddFrame(new AnimationFrame(new Rectangle(0, 256, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(64, 256, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(128, 256, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(192, 256, 64, 64)));
 
-            return anim;
-        }
-        private Animation BuildIdleAnimation()
-        {
-            Animation anim = new Animation();
-
-            anim.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
-            anim.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
-
-            return anim;
-        }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, positie, currentAnimation.GetCurrentFrameRectangle(), Color.White, 0f, Vector2.Zero, 1f, direction, 0f);
-            
+            spriteBatch.Draw(
+                _texture,
+                _physics.Position,
+                _animationController.GetCurrentFrameRectangle(),
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                _direction,
+                0f
+            );
         }
 
-        public void Update(GameTime gametime)
+        private void HandleMovement()
         {
-            HandleInput();
-            if (isJumping)
+            bool isMoving = false;
+
+            if (_inputHandler.IsMovingRight())
             {
-                velocityY += gravity;
-                positie.Y += velocityY;
+                _physics.MoveHorizontal(1);
+                _direction = SpriteEffects.None;
+                isMoving = true;
+            }
+            else if (_inputHandler.IsMovingLeft())
+            {
+                _physics.MoveHorizontal(-1);
+                _direction = SpriteEffects.FlipHorizontally;
+                isMoving = true;
+            }
+            else
+            {
+                _physics.StopHorizontalMovement();
             }
 
-            //grounded check
-            if (positie.Y >= groundLevel)
+            if (_inputHandler.IsJumping())
             {
-                positie.Y = groundLevel;
-                velocityY = 0;
-                isJumping = false;
+                _physics.Jump();
             }
-            currentAnimation.Update(gametime);
+
+            //Change animation based on state
+            if (!isMoving && _physics.IsGrounded)
+            {
+                _animationController.IdleAnimation();
+            }
+            else if (isMoving && _physics.IsGrounded)
+            {
+                _animationController.RunAnimation();
+            }
         }
 
-        private void HandleInput()
+        private void UpdatePhysics()
         {
-            KeyboardState k = Keyboard.GetState();
+            _physics.ApplyGravity();
+            _physics.UpdateVerticalPosition();
+        }
 
-            bool isRunning = false;
-
-            // Move Right
-            if (k.IsKeyDown(Keys.D))
+        private void UpdateAnimation()
+        {
+            if (!_physics.IsGrounded)
             {
-                snelheid.X = 3;
-                direction = SpriteEffects.None;
-                positie += snelheid;
-
-                if (!isJumping) 
-                    currentAnimation = animations.Run;
-
-                isRunning = true;
-            }
-
-            // Move Left
-            if (k.IsKeyDown(Keys.A))
-            {
-                snelheid.X = -3;
-                direction = SpriteEffects.FlipHorizontally;
-                positie += snelheid;
-
-                if (!isJumping) 
-                    currentAnimation = animations.Run;
-                isRunning = true;
-            }
-
-            //Jump
-            if (k.IsKeyDown(Keys.Space) && !isJumping)
-            {
-                isJumping = true;
-                velocityY = jumpStrength;
-                currentAnimation = animations.Jump;
-            }
-
-            //Idle
-            if (!isRunning)
-            {
-                snelheid.X = 0;
-                currentAnimation = animations.Idle;
+                _animationController.JumpAnimation();
             }
         }
     }
