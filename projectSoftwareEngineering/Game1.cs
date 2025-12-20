@@ -25,10 +25,6 @@ namespace projectSoftwareEngineering
         private List<ICollidable> _collidables;
         private CollisionManager _collisionManager;
 
-        RenderTarget2D renderTarget;
-        int virtualWidth = 300;  
-        int virtualHeight = 160;   
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -47,11 +43,6 @@ namespace projectSoftwareEngineering
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
-            renderTarget = new RenderTarget2D(
-                GraphicsDevice,
-                virtualWidth,
-                virtualHeight
-            );
 
             var inputHandler = new KeyboardInputChecker();
             var heroConfig = new CharacterConfig { StartPosition = new Vector2(50, 50) };
@@ -61,7 +52,7 @@ namespace projectSoftwareEngineering
             _platformTexture = CreateColoredTexture(Color.Brown);
 
             // Create floor (bottom of screen)
-            var floor = new Floor(_floorTexture, 0, 150, virtualWidth, 30);
+            var floor = new Floor(_floorTexture, 0, 150, 800, 30);
             _collidables.Add(floor);
 
             // Create some platforms
@@ -75,10 +66,10 @@ namespace projectSoftwareEngineering
             _collidables.Add(platform3);
 
             // Create walls
-            var leftWall = new Floor(_floorTexture, 0, 0, 10, virtualHeight);
+            var leftWall = new Floor(_floorTexture, 0, 0, 10, 480);
             _collidables.Add(leftWall);
 
-            var rightWall = new Floor(_floorTexture, virtualWidth - 10, 0, 10, virtualHeight);
+            var rightWall = new Floor(_floorTexture, 800 - 10, 0, 10, 480);
             _collidables.Add(rightWall);
         }
         private Texture2D CreateColoredTexture(Color color)
@@ -107,8 +98,7 @@ namespace projectSoftwareEngineering
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(renderTarget);
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
 
@@ -127,14 +117,6 @@ namespace projectSoftwareEngineering
             _spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
-
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(
-                renderTarget,
-                new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
-                Color.White
-            );
-            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
