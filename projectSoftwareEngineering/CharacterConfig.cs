@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace projectSoftwareEngineering
 {
-    public class HeroConfig
+    public class CharacterConfig
     {
-        public Vector2 StartPosition { get; set; } = new Vector2(0, 85);
+        public Vector2 StartPosition { get; set; } = new Vector2(50, 50);
         public float Gravity { get; set; } = 0.4f;
         public float JumpStrength { get; set; } = -7.5f;
         public float MoveSpeed { get; set; } = 3f;

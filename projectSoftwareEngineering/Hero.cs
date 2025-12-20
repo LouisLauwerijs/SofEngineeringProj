@@ -10,20 +10,29 @@ using projectSoftwareEngineering.Animations;
 
 namespace projectSoftwareEngineering
 {
-    public class Hero : IGameObject
+    public class Hero : IGameObject, ICollidable
     {
-        private readonly Texture2D _texture;
-        private readonly IInputChecker _inputHandler;
-        private readonly Physics _physics;
-        private readonly AnimationController _animationController;
+        private Texture2D _texture;
+        private IInputChecker _inputHandler;
+        private Physics _physics;
+        private AnimationController _animationController;
+        private CollisionManager _collisionManager;
 
         private SpriteEffects _direction = SpriteEffects.None;
 
-        // Dependency Injection (Dependency Inversion Principle)
-        public Hero(Texture2D texture, IInputChecker inputHandler, HeroConfig config)
+        public Rectangle Bounds => new Rectangle(
+            (int)_physics.Position.X,
+            (int)_physics.Position.Y,
+            64, 64
+            );
+
+        public bool IsSolid => false;
+
+        public Hero(Texture2D texture, IInputChecker inputHandler, CharacterConfig config, CollisionManager collisionManager)
         {
             _texture = texture;
             _inputHandler = inputHandler;
+            _collisionManager = collisionManager;
 
             // Create components with injected configuration
             _physics = new Physics(
@@ -37,12 +46,31 @@ namespace projectSoftwareEngineering
             _animationController = new AnimationController(AnimationFactory.CreateHeroAnimations());
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, List<ICollidable> platforms)
         {
+            _physics.IsGrounded = false;
+
             HandleMovement();
-            UpdatePhysics();
+
+            // Apply gravity
+            _physics.ApplyGravity();
+
+            // Update vertical position and check collisions
+            _physics.UpdateVerticalPosition();
+            _collisionManager.FloorCollisionCheck(_physics, platforms);
+
+            // Check horizontal collisions
+            _collisionManager.WallCollisionCheck(_physics, platforms);
+
+            // Check if on ground
+            _physics.IsGrounded = _collisionManager.IsStandingOnGroud(Bounds, platforms);
+
             UpdateAnimation();
             _animationController.Update(gameTime);
+        }
+        public void Update(GameTime gameTime)
+        {
+            //just here for the IGameObject property.
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -86,7 +114,6 @@ namespace projectSoftwareEngineering
                 _physics.Jump();
             }
 
-            //Change animation based on state
             if (!isMoving && _physics.IsGrounded)
             {
                 _animationController.IdleAnimation();
@@ -95,12 +122,6 @@ namespace projectSoftwareEngineering
             {
                 _animationController.RunAnimation();
             }
-        }
-
-        private void UpdatePhysics()
-        {
-            _physics.ApplyGravity();
-            _physics.UpdateVerticalPosition();
         }
 
         private void UpdateAnimation()

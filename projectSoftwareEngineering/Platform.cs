@@ -8,22 +8,25 @@ using System.Threading.Tasks;
 
 namespace projectSoftwareEngineering
 {
-    public class Floor: IGameObject, ICollidable
+    public class Platform : IGameObject, ICollidable
     {
         private Texture2D texture;
-        public Rectangle Bounds { get; private set; }
+        public Rectangle Bounds { get; set; }
 
         public bool IsSolid => true;
 
-        public Floor(Texture2D tex, int x, int y, int width, int height)
+        public Platform(Texture2D _texture, int x, int y, int width, int height)
         {
-            texture = tex;
+            texture = _texture;
             Bounds = new Rectangle(x, y, width, height);
         }
-        public void Update(GameTime gameTime) { }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Bounds, Color.White);
+            spriteBatch.Draw(texture, Bounds, Color.Black);
+        }
+
+        public void Update(GameTime gametime)
+        {
         }
     }
 }
