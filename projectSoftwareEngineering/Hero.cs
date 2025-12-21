@@ -28,6 +28,8 @@ namespace projectSoftwareEngineering
 
         public bool IsSolid => false;
 
+        public bool IsOneWay => false;
+
         public Hero(Texture2D texture, IInputChecker inputHandler, CharacterConfig config, CollisionManager collisionManager)
         {
             _texture = texture;

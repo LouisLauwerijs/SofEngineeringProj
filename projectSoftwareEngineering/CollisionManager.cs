@@ -48,24 +48,43 @@ namespace projectSoftwareEngineering
 
                 if (bounds.Intersects(platform.Bounds))
                 {
+                    bool isOneWayPlatform = platform.IsOneWay;
+
                     // Falling down - land on platform
                     if (physics.Velocity.Y > 0)
                     {
-                        physics.Position = new Vector2(
-                            physics.Position.X,
-                            platform.Bounds.Top - 32-18
-                        );
-                        physics.Velocity = new Vector2(physics.Velocity.X, 0);
-                        physics.IsGrounded = true;
+                        if (isOneWayPlatform)
+                        {
+                            float previousBottom = physics.Position.Y + 18 + 32 - physics.Velocity.Y;
+                            if (previousBottom <= platform.Bounds.Top + 5) // 5px tolerance
+                            {
+                                physics.Position = new Vector2(
+                                    physics.Position.X,
+                                    platform.Bounds.Top - 32 - 18
+                                );
+                                physics.Velocity = new Vector2(physics.Velocity.X, 0);
+                                physics.IsGrounded = true;
+                            }
+                        }
+                        else
+                        {
+                            physics.Position = new Vector2(
+                                physics.Position.X,
+                                platform.Bounds.Top - 32 - 18
+                            );
+                            physics.Velocity = new Vector2(physics.Velocity.X, 0);
+                            physics.IsGrounded = true;
+                        }
                     }
-                    // Moving up - hit ceiling
-                    else if (physics.Velocity.Y < 0)
+                    // hit ceiling so only for solid platforms
+                    else if (physics.Velocity.Y < 0 && !isOneWayPlatform)
                     {
                         physics.Position = new Vector2(
                             physics.Position.X,
                             platform.Bounds.Bottom - 18
                         );
                         physics.Velocity = new Vector2(physics.Velocity.X, 0);
+                        
                     }
                 }
             }
@@ -81,8 +100,10 @@ namespace projectSoftwareEngineering
 
             foreach (var platform in platforms)
             {
-                if (!platform.IsSolid) continue;
-
+                if (!platform.IsSolid) 
+                    continue;
+                if (platform.IsOneWay)
+                    continue;
                 if (bounds.Intersects(platform.Bounds))
                 {
                     // Moving right - hit wall
