@@ -37,6 +37,7 @@ namespace projectSoftwareEngineering
         //floors/platforms
         private Texture2D _floorTexture;
         private Texture2D _platformTexture;
+        private Texture2D _wallTexture;
 
         //collisions
         private List<ICollidable> _collidables;
@@ -83,6 +84,7 @@ namespace projectSoftwareEngineering
 
             _floorTexture = CreateColoredTexture(Color.DarkGreen);
             _platformTexture = CreateColoredTexture(Color.Brown);
+            _wallTexture = CreateColoredTexture(Color.Orange);
 
             int screenWidth = GraphicsDevice.Viewport.Width;
             int screenHeight = GraphicsDevice.Viewport.Height;
@@ -102,7 +104,7 @@ namespace projectSoftwareEngineering
             _collidables.Add(platform3);
 
             // Create THIN walls on the sides
-            var leftWall = new Floor(_floorTexture, 0, 0, 5, virtualHeight);
+            var leftWall = new Wall(_wallTexture, 0, 0, virtualHeight, 5);
             _collidables.Add(leftWall);
 
             //var rightWall = new Floor(_floorTexture, screenWidth - 5, 0, 5, virtualHeight);

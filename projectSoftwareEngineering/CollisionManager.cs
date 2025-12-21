@@ -45,6 +45,7 @@ namespace projectSoftwareEngineering
             foreach (var platform in platforms)
             {
                 if (!platform.IsSolid) continue;
+                if (platform is Wall) continue;
 
                 if (bounds.Intersects(platform.Bounds))
                 {
@@ -100,29 +101,36 @@ namespace projectSoftwareEngineering
 
             foreach (var platform in platforms)
             {
-                if (!platform.IsSolid) 
+                if (!platform.IsSolid)
                     continue;
                 if (platform.IsOneWay)
                     continue;
+
+                // Skip platforms that are primarily horizontal (floors/ceilings)
+                // Only check vertical walls
+                if (platform.Bounds.Width > platform.Bounds.Height)
+                    continue;
+
                 if (bounds.Intersects(platform.Bounds))
                 {
-                    // Moving right - hit wall
+                    // Moving right - hit right wall
                     if (physics.Velocity.X > 0)
                     {
                         physics.Position = new Vector2(
                             platform.Bounds.Left - 28 - 18,
                             physics.Position.Y
                         );
+                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
                     }
-                    // Moving left - hit wall
+                    // Moving left - hit left wall
                     else if (physics.Velocity.X < 0)
                     {
                         physics.Position = new Vector2(
                             platform.Bounds.Right - 18,
                             physics.Position.Y
                         );
+                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
                     }
-                    physics.Velocity = new Vector2(0, physics.Velocity.Y);
                 }
             }
         }
