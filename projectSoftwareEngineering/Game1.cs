@@ -43,6 +43,10 @@ namespace projectSoftwareEngineering
         private List<ICollidable> _collidables;
         private CollisionManager _collisionManager;
 
+        //camera
+        private Camera _camera;
+
+        //bigger sprite
         RenderTarget2D _renderTarget;
         int virtualWidth = 500;
         int virtualHeight = 300;
@@ -86,29 +90,33 @@ namespace projectSoftwareEngineering
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
 
+            _camera = new Camera(virtualWidth);
+
             int screenWidth = GraphicsDevice.Viewport.Width;
             int screenHeight = GraphicsDevice.Viewport.Height;
 
             // Create floor (bottom of screen)
-            var floor = new Floor(_floorTexture, 0, virtualHeight-10, virtualWidth, 30);
+            Floor floor = new Floor(_floorTexture, 0, virtualHeight-10, 1000, 30);
             _collidables.Add(floor);
 
             // Create some platforms
-            var platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 15);
+            Platform platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 15);
             _collidables.Add(platform1);
 
-            var platform2 = new Platform(_platformTexture, 220, virtualHeight - 130, 50, 15);
+            Platform platform2 = new Platform(_platformTexture, 220, virtualHeight - 130, 50, 15);
             _collidables.Add(platform2);
 
-            var platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 15);
+            Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 15);
             _collidables.Add(platform3);
 
             // Create THIN walls on the sides
-            var leftWall = new Wall(_wallTexture, 0, 0, virtualHeight, 5);
+            Wall leftWall = new Wall(_wallTexture, -155, 0, 160, virtualHeight);
             _collidables.Add(leftWall);
 
-            //var rightWall = new Floor(_floorTexture, screenWidth - 5, 0, 5, virtualHeight);
-            //_collidables.Add(rightWall);
+            //Right wall
+            Wall RightWall = new Wall(_wallTexture, 1000, 0, 500, virtualHeight);
+            _collidables.Add(RightWall);
+
         }
         private Texture2D CreateColoredTexture(Color color)
         {
@@ -123,6 +131,7 @@ namespace projectSoftwareEngineering
                 Exit();
 
             _hero.Update(gameTime, _collidables);
+            _camera.Follow(_hero.Bounds.Center.ToVector2());
 
             foreach (var collidable in _collidables)
             {
@@ -139,7 +148,7 @@ namespace projectSoftwareEngineering
             GraphicsDevice.SetRenderTarget(_renderTarget);
             GraphicsDevice.Clear(Color.Gray);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: _camera.Transform);
 
             // Draw platforms and floors
             foreach (var collidable in _collidables)
@@ -154,6 +163,7 @@ namespace projectSoftwareEngineering
 
             // Draw hero
             _hero.Draw(_spriteBatch);
+
 
             DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 2); //-------------------
 

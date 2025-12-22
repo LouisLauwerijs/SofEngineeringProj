@@ -16,7 +16,7 @@ namespace projectSoftwareEngineering
         public bool IsSolid => true;
         public bool IsOneWay => false;
 
-        public Wall(Texture2D texture, int x, int y, int height, int width)
+        public Wall(Texture2D texture, int x, int y, int width, int height)
         {
             _texture = texture;
             Bounds = new Rectangle(x, y, width, height);
