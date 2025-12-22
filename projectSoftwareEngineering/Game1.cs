@@ -10,9 +10,8 @@ namespace projectSoftwareEngineering
 {
     public class Game1 : Game
     {
-        private Texture2D _debugTexture; // Add this field at the top with other textures
+        private Texture2D _debugTexture; 
 
-        // Add this method
         private void DrawRectangleOutline(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness = 2)
         {
             // Top
@@ -25,7 +24,7 @@ namespace projectSoftwareEngineering
             spriteBatch.Draw(_debugTexture, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
         }
 
-        //--------------------------------
+        //-------------------------------- debug 
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -67,11 +66,7 @@ namespace projectSoftwareEngineering
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
-
-            _debugTexture = CreateColoredTexture(Color.White);
-            //--------------------------------------------
+            _debugTexture = CreateColoredTexture(Color.White); //-------------- debug
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
@@ -92,14 +87,11 @@ namespace projectSoftwareEngineering
 
             _camera = new Camera(virtualWidth);
 
-            int screenWidth = GraphicsDevice.Viewport.Width;
-            int screenHeight = GraphicsDevice.Viewport.Height;
-
-            // Create floor (bottom of screen)
+            // Create floor 
             Floor floor = new Floor(_floorTexture, 0, virtualHeight-10, 1000, 30);
             _collidables.Add(floor);
 
-            // Create some platforms
+            // platforms
             Platform platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 15);
             _collidables.Add(platform1);
 
@@ -109,7 +101,11 @@ namespace projectSoftwareEngineering
             Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 15);
             _collidables.Add(platform3);
 
-            // Create THIN walls on the sides
+            //testFloor
+            Floor test = new Floor(_floorTexture, 100, virtualHeight - 50, 50, 50);
+            _collidables.Add(test);
+
+            // Left wall
             Wall leftWall = new Wall(_wallTexture, -155, 0, 160, virtualHeight);
             _collidables.Add(leftWall);
 
@@ -158,14 +154,14 @@ namespace projectSoftwareEngineering
                     gameObject.Draw(_spriteBatch);
                 }
 
-                DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 2); //---------
+                DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 2); //--------- debug
             }
 
             // Draw hero
             _hero.Draw(_spriteBatch);
 
 
-            DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 2); //-------------------
+            DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 2); //------------------- debug
 
             _spriteBatch.End();
 

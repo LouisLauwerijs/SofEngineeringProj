@@ -17,7 +17,7 @@ namespace projectSoftwareEngineering
         private readonly float _jumpStrength;
         private readonly float _moveSpeed;
 
-        public Physics(Vector2 startPosition, float gravity, float jumpStrength, float moveSpeed, float groundLevel)
+        public Physics(Vector2 startPosition, float gravity, float jumpStrength, float moveSpeed)
         {
             Position = startPosition;
             _gravity = gravity;

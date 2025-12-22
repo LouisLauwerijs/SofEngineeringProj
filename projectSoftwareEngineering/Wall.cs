@@ -14,7 +14,6 @@ namespace projectSoftwareEngineering
         public Rectangle Bounds { get; set; }
 
         public bool IsSolid => true;
-        public bool IsOneWay => false;
 
         public Wall(Texture2D texture, int x, int y, int width, int height)
         {

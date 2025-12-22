@@ -9,11 +9,6 @@ namespace projectSoftwareEngineering
 {
     public class CollisionManager
     {
-        public bool CheckCollision(Rectangle a, Rectangle b)
-        {
-            return a.Intersects(b);
-        }
-
         public bool IsStandingOnGroud(Rectangle characterBounds, List<ICollidable> platforms)
         {
             Rectangle floorCheck = new Rectangle(
@@ -33,65 +28,76 @@ namespace projectSoftwareEngineering
             return false;
         }
 
-        public void FloorCollisionCheck(Physics physics, List<ICollidable> platforms)
+        public void FloorCollisionCheck(Physics physics, List<ICollidable> collidables)
         {
-            //Player's hitbox, so change if changed in hero.cs
             Rectangle bounds = new Rectangle(
                 (int)physics.Position.X + 18,
                 (int)physics.Position.Y + 18,
                 28, 32
             );
 
-            foreach (var platform in platforms)
+            foreach (var collidable in collidables)
             {
-                if (!platform.IsSolid) continue;
-                if (platform is Wall) continue;
+                if (!collidable.IsSolid) continue;
+                if (!(collidable is Floor)) continue;
 
-                if (bounds.Intersects(platform.Bounds))
+                if (bounds.Intersects(collidable.Bounds))
                 {
-                    bool isOneWayPlatform = platform.IsOneWay;
+                    // Calculate overlap on each axis
+                    int overlapLeft = bounds.Right - collidable.Bounds.Left;
+                    int overlapRight = collidable.Bounds.Right - bounds.Left;
+                    int overlapTop = bounds.Bottom - collidable.Bounds.Top;
+                    int overlapBottom = collidable.Bounds.Bottom - bounds.Top;
 
-                    // Falling down - land on platform
-                    if (physics.Velocity.Y > 0)
+                    // Find where player collides
+                    int minOverlap = Math.Min(
+                        Math.Min(overlapLeft, overlapRight),
+                        Math.Min(overlapTop, overlapBottom)
+                    );
+
+                    // Check for lowest overlap
+                    if (minOverlap == overlapTop && physics.Velocity.Y > 0)
                     {
-                        if (isOneWayPlatform)
-                        {
-                            float previousBottom = physics.Position.Y + 18 + 32 - physics.Velocity.Y;
-                            if (previousBottom <= platform.Bounds.Top + 5) // 5px tolerance
-                            {
-                                physics.Position = new Vector2(
-                                    physics.Position.X,
-                                    platform.Bounds.Top - 32 - 18
-                                );
-                                physics.Velocity = new Vector2(physics.Velocity.X, 0);
-                                physics.IsGrounded = true;
-                            }
-                        }
-                        else
-                        {
-                            physics.Position = new Vector2(
-                                physics.Position.X,
-                                platform.Bounds.Top - 32 - 18
-                            );
-                            physics.Velocity = new Vector2(physics.Velocity.X, 0);
-                            physics.IsGrounded = true;
-                        }
-                    }
-                    // hit ceiling so only for solid platforms
-                    else if (physics.Velocity.Y < 0 && !isOneWayPlatform)
-                    {
+                        // Land on floor 
                         physics.Position = new Vector2(
                             physics.Position.X,
-                            platform.Bounds.Bottom - 18
+                            collidable.Bounds.Top - 32 - 18
                         );
                         physics.Velocity = new Vector2(physics.Velocity.X, 0);
-                        
+                        physics.IsGrounded = true;
+                    }
+                    else if (minOverlap == overlapBottom && physics.Velocity.Y < 0)
+                    {
+                        // Hit ceiling 
+                        physics.Position = new Vector2(
+                            physics.Position.X,
+                            collidable.Bounds.Bottom - 18
+                        );
+                        physics.Velocity = new Vector2(physics.Velocity.X, 0);
+                    }
+                    else if (minOverlap == overlapLeft && physics.Velocity.X > 0)
+                    {
+                        // Hit left side
+                        physics.Position = new Vector2(
+                            collidable.Bounds.Left - 28 - 18,
+                            physics.Position.Y
+                        );
+                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
+                    }
+                    else if (minOverlap == overlapRight && physics.Velocity.X < 0)
+                    {
+                        // Hit right side
+                        physics.Position = new Vector2(
+                            collidable.Bounds.Right - 18,
+                            physics.Position.Y
+                        );
+                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
                     }
                 }
             }
         }
 
-        public void WallCollisionCheck(Physics physics, List<ICollidable> platforms)
+        public void PlatformCollisionCheck(Physics physics, List<ICollidable> collidables)
         {
             Rectangle bounds = new Rectangle(
                 (int)physics.Position.X + 18,
@@ -99,34 +105,59 @@ namespace projectSoftwareEngineering
                 28, 32
             );
 
-            foreach (var platform in platforms)
+            foreach (var collidable in collidables)
             {
-                if (!platform.IsSolid)
-                    continue;
-                if (platform.IsOneWay)
-                    continue;
+                if (!collidable.IsSolid) continue;
+                if (!(collidable is Platform)) continue;
 
-                // Skip platforms that are primarily horizontal (floors/ceilings)
-                // Only check vertical walls
-                if (platform.Bounds.Width > platform.Bounds.Height)
-                    continue;
-
-                if (bounds.Intersects(platform.Bounds))
+                if (bounds.Intersects(collidable.Bounds))
                 {
-                    // Moving right - hit right wall
+                    if (physics.Velocity.Y > 0)
+                    {
+                        float previousBottom = physics.Position.Y + 18 + 32 - physics.Velocity.Y;
+                        if (previousBottom <= collidable.Bounds.Top + 5)
+                        {
+                            physics.Position = new Vector2(
+                                physics.Position.X,
+                                collidable.Bounds.Top - 32 - 18
+                            );
+                            physics.Velocity = new Vector2(physics.Velocity.X, 0);
+                            physics.IsGrounded = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void WallCollisionCheck(Physics physics, List<ICollidable> collidables)
+        {
+            Rectangle bounds = new Rectangle(
+                (int)physics.Position.X + 18,
+                (int)physics.Position.Y + 18,
+                28, 32
+            );
+
+            foreach (var collidable in collidables)
+            {
+                if (!collidable.IsSolid) continue;
+                if (!(collidable is Wall)) continue;
+
+                if (bounds.Intersects(collidable.Bounds))
+                {
+                    // Hit left side
                     if (physics.Velocity.X > 0)
                     {
                         physics.Position = new Vector2(
-                            platform.Bounds.Left - 28 - 18,
+                            collidable.Bounds.Left - 28 - 18,
                             physics.Position.Y
                         );
                         physics.Velocity = new Vector2(0, physics.Velocity.Y);
                     }
-                    // Moving left - hit left wall
+                    // Hit right side
                     else if (physics.Velocity.X < 0)
                     {
                         physics.Position = new Vector2(
-                            platform.Bounds.Right - 18,
+                            collidable.Bounds.Right - 18,
                             physics.Position.Y
                         );
                         physics.Velocity = new Vector2(0, physics.Velocity.Y);

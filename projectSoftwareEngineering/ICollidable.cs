@@ -11,6 +11,5 @@ namespace projectSoftwareEngineering
     {
         Rectangle Bounds { get; }
         bool IsSolid { get; }
-        bool IsOneWay { get; }
     }
 }

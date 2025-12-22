@@ -28,8 +28,6 @@ namespace projectSoftwareEngineering
 
         public bool IsSolid => false;
 
-        public bool IsOneWay => false;
-
         public Hero(Texture2D texture, IInputChecker inputHandler, CharacterConfig config, CollisionManager collisionManager)
         {
             _texture = texture;
@@ -41,27 +39,26 @@ namespace projectSoftwareEngineering
                 config.StartPosition,
                 config.Gravity,
                 config.JumpStrength,
-                config.MoveSpeed,
-                config.GroundLevel
+                config.MoveSpeed
             );
 
             _animationController = new AnimationController(AnimationFactory.CreateHeroAnimations());
         }
 
-        public void Update(GameTime gameTime, List<ICollidable> platforms)
+        public void Update(GameTime gameTime, List<ICollidable> collidables)
         {
             HandleMovement();
 
             _physics.ApplyGravity();
 
             _physics.UpdateVerticalPosition();
-            _collisionManager.FloorCollisionCheck(_physics, platforms);
-
-            _collisionManager.WallCollisionCheck(_physics, platforms);
+            _collisionManager.FloorCollisionCheck(_physics, collidables);
+            _collisionManager.PlatformCollisionCheck(_physics, collidables);
+            _collisionManager.WallCollisionCheck(_physics, collidables);
 
             if (_physics.Velocity.Y >= 0) 
             {
-                _physics.IsGrounded = _collisionManager.IsStandingOnGroud(Bounds, platforms);
+                _physics.IsGrounded = _collisionManager.IsStandingOnGroud(Bounds, collidables);
             }
 
             UpdateAnimation();
