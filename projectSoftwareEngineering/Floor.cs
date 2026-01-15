@@ -23,7 +23,29 @@ namespace projectSoftwareEngineering
         public void Update(GameTime gameTime) { }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Bounds, Color.White);
+            int tilesX = (int)Math.Ceiling((float)Bounds.Width / texture.Width);
+            int tilesY = (int)Math.Ceiling((float)Bounds.Height / texture.Height);
+
+            for (int x = 0; x < tilesX; x++)
+            {
+                for (int y = 0; y < tilesY; y++)
+                {
+                    Rectangle rect = new Rectangle(
+                        Bounds.X + (x * texture.Width),
+                        Bounds.Y + (y * texture.Height),
+                        texture.Width,
+                        texture.Height
+                    );
+
+                    Rectangle sourceRect = new Rectangle(
+                        -1, 0,
+                        Math.Min(texture.Width, Bounds.Width - (x * texture.Width)),
+                        Math.Min(texture.Height, Bounds.Height - (y * texture.Height))
+                    );
+
+                    spriteBatch.Draw(texture, rect, sourceRect, Color.White);
+                }
+            }
         }
     }
 }

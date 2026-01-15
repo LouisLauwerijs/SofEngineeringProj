@@ -55,14 +55,18 @@ namespace projectSoftwareEngineering
 
         //bigger sprite
         RenderTarget2D _renderTarget;
-        int virtualWidth = 500;
-        int virtualHeight = 300;
+        int virtualWidth = 600;
+        int virtualHeight = 360;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
@@ -81,6 +85,7 @@ namespace projectSoftwareEngineering
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
+            _floorTexture = Content.Load<Texture2D>("floorSprite");
             //TODO: Add all textures for platforms, enemies, floors, spikes
 
             var inputHandler = new KeyboardInputChecker();
@@ -94,7 +99,7 @@ namespace projectSoftwareEngineering
             );
 
             // TEMPORARY PLATFORM CREATION
-            _floorTexture = CreateColoredTexture(Color.DarkGreen);
+            
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
 
@@ -102,9 +107,9 @@ namespace projectSoftwareEngineering
             _spikeTexture = CreateColoredTexture(Color.DarkRed);
 
             _camera = new Camera(virtualWidth);
-
+            
             // Create floor 
-            Floor floor = new Floor(_floorTexture, 0, virtualHeight-10, 1000, 30);
+            Floor floor = new Floor(_floorTexture, 0, virtualHeight-15, 1000, 30);
             _collidables.Add(floor);
 
             // platforms
@@ -136,7 +141,7 @@ namespace projectSoftwareEngineering
             _collidables.Add(testFloor);
 
             //spike
-            Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 30, 20, 20);
+            Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 35, 20, 20);
             _spikes.Add(spike);
             _collidables.Add(spike);
         }

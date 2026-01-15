@@ -11,7 +11,7 @@ namespace projectSoftwareEngineering
 
         public override int Height => 30;
 
-        private int _edgeDistance= 8;
+        private int _edgeDistance= 4;
 
         public WalkingEnemy(Texture2D texture, Vector2 startPosition, int health = 1)
             :base(texture, startPosition, health) 
