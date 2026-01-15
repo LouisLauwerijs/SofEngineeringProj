@@ -14,11 +14,11 @@ namespace projectSoftwareEngineering
         public abstract int Width { get; }
         public abstract int Height { get; }
         public Rectangle Bounds => new Rectangle(
-            (int)_physics.Position.X,
-            (int)_physics.Position.Y,
-            Width,
-            Height
+            (int)_physics.Position.X + 18,
+            (int)_physics.Position.Y + 18,
+            28, 32
         );
+
         public Health Health { get; set; }
         public bool IsSolid => false;
 
@@ -31,7 +31,7 @@ namespace projectSoftwareEngineering
                 spawnPoint,
                 gravity: 0.4f,
                 jumpStrength: 0,
-                moveSpeed: 1.5f
+                moveSpeed: 0.75f
             );
 
             Health = new Health(health);

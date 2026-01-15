@@ -124,10 +124,16 @@ namespace projectSoftwareEngineering
             //Right wall
             Floor RightWall = new Floor(_wallTexture, 1000, 0, 500, virtualHeight);
             _collidables.Add(RightWall);
+            
+
 
             //enemy 1
-            WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 2); // Start higher, let it fall
+            WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 1); 
             _enemies.Add(enemy1);
+
+            //enemyplatform test
+            Platform testFloor = new Platform(_platformTexture, 300, 200, 80, 15);
+            _collidables.Add(testFloor);
 
             //spike
             Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 30, 20, 20);
