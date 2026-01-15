@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Systems
 {
     public class Camera
     {
@@ -23,7 +23,7 @@ namespace projectSoftwareEngineering
 
         public void Follow(Vector2 positionPlayer)
         {
-            _position = positionPlayer.X - (_visibility / 2f) + 80;
+            _position = positionPlayer.X - _visibility / 2f + 80;
 
             UpdateTransform();
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using projectSoftwareEngineering.Interfaces;
+using projectSoftwareEngineering.Systems;
 using System.Collections.Generic;
 
 namespace projectSoftwareEngineering.Characters.Enemies

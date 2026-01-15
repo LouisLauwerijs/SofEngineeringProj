@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Characters
 {
     public class Health
     {

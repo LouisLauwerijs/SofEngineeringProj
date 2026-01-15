@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Environment
 {
     public class Floor: IGameObject, ICollidable
     {
@@ -32,16 +32,16 @@ namespace projectSoftwareEngineering
                 for (int y = 0; y < tilesY; y++)
                 {
                     Rectangle rect = new Rectangle(
-                        Bounds.X + (x * texture.Width),
-                        Bounds.Y + (y * texture.Height),
+                        Bounds.X + x * texture.Width,
+                        Bounds.Y + y * texture.Height,
                         texture.Width,
                         texture.Height
                     );
 
                     Rectangle sourceRect = new Rectangle(
                         0, 0,
-                        Math.Min(texture.Width, Bounds.Width - (x * texture.Width)),
-                        Math.Min(texture.Height, Bounds.Height - (y * texture.Height))
+                        Math.Min(texture.Width, Bounds.Width - x * texture.Width),
+                        Math.Min(texture.Height, Bounds.Height - y * texture.Height)
                     );
 
                     spriteBatch.Draw(texture, rect, sourceRect, Color.White);

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using projectSoftwareEngineering.Characters;
+using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Systems
 {
     public class CollisionManager
     {

@@ -3,8 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using projectSoftwareEngineering.Characters;
 using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;
+using projectSoftwareEngineering.Systems;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,8 +52,9 @@ namespace projectSoftwareEngineering
         //enemies and spikes
         private List<Enemy> _enemies;
         private List<Spike> _spikes;
-        private Texture2D _enemyTexture;
+        private Texture2D _walkingEnemyTexture;
         private Texture2D _spikeTexture;
+        private Texture2D _jumpingEnemyTexture;
 
         //bigger sprite
         RenderTarget2D _renderTarget;
@@ -103,8 +106,9 @@ namespace projectSoftwareEngineering
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
 
-            _enemyTexture = CreateColoredTexture(Color.Red);
+            _walkingEnemyTexture = CreateColoredTexture(Color.Red);
             _spikeTexture = CreateColoredTexture(Color.DarkRed);
+            _jumpingEnemyTexture = CreateColoredTexture(Color.Purple);
 
             _camera = new Camera(virtualWidth);
             
@@ -131,12 +135,15 @@ namespace projectSoftwareEngineering
             _collidables.Add(RightWall);
 
             //enemy 1
-            WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 1); 
+            WalkingEnemy enemy1 = new WalkingEnemy(_walkingEnemyTexture, new Vector2(300, 100), 1); 
             _enemies.Add(enemy1);
-
             //enemyplatform test
             Platform testFloor = new Platform(_platformTexture, 300, 200, 80, 7);
             _collidables.Add(testFloor);
+
+            //jumping enemy
+            JumpingEnemy enemy2 = new JumpingEnemy(_jumpingEnemyTexture, new Vector2(500, 100), 1);
+            _enemies.Add(enemy2);
 
             //spike
             Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 35, 20, 20);

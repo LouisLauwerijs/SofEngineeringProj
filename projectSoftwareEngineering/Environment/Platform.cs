@@ -7,24 +7,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Environment
 {
-    public class Spike : ICollidable, IGameObject
+    public class Platform : IGameObject, ICollidable
     {
-        private Texture2D _texture;
+        private Texture2D texture;
         public Rectangle Bounds { get; set; }
-        public bool IsSolid => false;
 
-        public Spike(Texture2D texture, int x, int y, int width, int height)
+        public bool IsSolid => true;
+
+        public Platform(Texture2D _texture, int x, int y, int width, int height)
         {
-            _texture = texture;
+            texture = _texture;
             Bounds = new Rectangle(x, y, width, height);
         }
-
-        public void Update(GameTime gameTime) { }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Bounds, Color.DarkRed);
+            spriteBatch.Draw(texture, Bounds, Color.Black);
+        }
+
+        public void Update(GameTime gametime)
+        {
         }
     }
 }
