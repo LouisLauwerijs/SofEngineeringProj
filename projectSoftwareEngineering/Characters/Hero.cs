@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using projectSoftwareEngineering.Animations;
+using projectSoftwareEngineering.Inputs;
+using projectSoftwareEngineering.Interfaces;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Characters
 {
     public class Hero : IGameObject, ICollidable, IDamageable
     {
@@ -27,7 +29,7 @@ namespace projectSoftwareEngineering
 
         public bool IsSolid => false;
 
-        public Hero(Texture2D texture, IInputChecker inputHandler, CharacterConfig config, CollisionManager collisionManager)
+        public Hero(Texture2D texture, IInputChecker inputHandler, ICharacterConfig config, CollisionManager collisionManager)
         {
             _texture = texture;
             _inputHandler = inputHandler;
@@ -144,7 +146,7 @@ namespace projectSoftwareEngineering
         public void ApplyKnockback(float direction)
         {
             _knockbackTimer = 0.5f;
-            System.Console.WriteLine($"Knockback applied! Timer: {_knockbackTimer}");
+            Console.WriteLine($"Knockback applied! Timer: {_knockbackTimer}");
             _physics.Position += new Vector2(direction * 15, 0);
         }
     }

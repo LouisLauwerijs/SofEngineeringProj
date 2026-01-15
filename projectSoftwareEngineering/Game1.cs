@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using projectSoftwareEngineering.Characters;
+using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Inputs;
+using projectSoftwareEngineering.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
-using System.Threading;
-using static System.Formats.Asn1.AsnWriter;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace projectSoftwareEngineering
 {
@@ -89,7 +89,7 @@ namespace projectSoftwareEngineering
             //TODO: Add all textures for platforms, enemies, floors, spikes
 
             var inputHandler = new KeyboardInputChecker();
-            var heroConfig = new CharacterConfig { StartPosition = new Vector2(100, 50) };
+            var heroConfig = new HeroConfig();
             _hero = new Hero(_heroTexture, inputHandler, heroConfig, _collisionManager);
 
             _renderTarget = new RenderTarget2D(
@@ -99,7 +99,7 @@ namespace projectSoftwareEngineering
             );
 
             // TEMPORARY PLATFORM CREATION
-            
+
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
 
@@ -113,13 +113,13 @@ namespace projectSoftwareEngineering
             _collidables.Add(floor);
 
             // platforms
-            Platform platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 15);
+            Platform platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 7);
             _collidables.Add(platform1);
 
-            Platform platform2 = new Platform(_platformTexture, 220, virtualHeight - 130, 50, 15);
+            Platform platform2 = new Platform(_platformTexture, 220, virtualHeight - 130, 50, 7);
             _collidables.Add(platform2);
 
-            Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 15);
+            Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 7);
             _collidables.Add(platform3);
 
             // Left wall -> floors have the same logic as walls
@@ -129,15 +129,13 @@ namespace projectSoftwareEngineering
             //Right wall
             Floor RightWall = new Floor(_wallTexture, 1000, 0, 500, virtualHeight);
             _collidables.Add(RightWall);
-            
-
 
             //enemy 1
             WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 1); 
             _enemies.Add(enemy1);
 
             //enemyplatform test
-            Platform testFloor = new Platform(_platformTexture, 300, 200, 80, 15);
+            Platform testFloor = new Platform(_platformTexture, 300, 200, 80, 7);
             _collidables.Add(testFloor);
 
             //spike

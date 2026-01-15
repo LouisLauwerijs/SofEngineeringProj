@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Characters.Enemies
 {
     public class WalkingEnemy: Enemy
     {
@@ -14,7 +15,7 @@ namespace projectSoftwareEngineering
         private int _edgeDistance= 4;
 
         public WalkingEnemy(Texture2D texture, Vector2 startPosition, int health = 1)
-            :base(texture, startPosition, health) 
+            :base(texture, new WalkingEnemyConfig(startPosition), health) 
         { 
         }
 

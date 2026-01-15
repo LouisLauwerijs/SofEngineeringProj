@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace projectSoftwareEngineering
                     );
 
                     Rectangle sourceRect = new Rectangle(
-                        -1, 0,
+                        0, 0,
                         Math.Min(texture.Width, Bounds.Width - (x * texture.Width)),
                         Math.Min(texture.Height, Bounds.Height - (y * texture.Height))
                     );

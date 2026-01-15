@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Interfaces;
 using System.Collections.Generic;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Characters.Enemies
 {
     public abstract class Enemy : IGameObject, ICollidable, IDamageable
     {
@@ -22,16 +23,16 @@ namespace projectSoftwareEngineering
         public Health Health { get; set; }
         public bool IsSolid => false;
 
-        public Enemy(Texture2D texture, Vector2 spawnPoint, int health)
+        public Enemy(Texture2D texture, ICharacterConfig config, int health)
         {
             _texture = texture;
             _facingRight = true;
 
             _physics = new Physics(
-                spawnPoint,
-                gravity: 0.4f,
-                jumpStrength: 0,
-                moveSpeed: 0.75f
+                config.StartPosition,
+                config.Gravity,
+                config.JumpStrength,
+                config.MoveSpeed
             );
 
             Health = new Health(health);

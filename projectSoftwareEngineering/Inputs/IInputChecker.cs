@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Inputs
 {
     public interface IInputChecker
     {

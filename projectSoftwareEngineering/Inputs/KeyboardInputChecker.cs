@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering
+namespace projectSoftwareEngineering.Inputs
 {
-    internal class KeyboardInputChecker: IInputChecker
+    public class KeyboardInputChecker: IInputChecker
     {
         public bool IsMovingRight()
         {
