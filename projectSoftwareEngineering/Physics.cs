@@ -13,9 +13,9 @@ namespace projectSoftwareEngineering
         public Vector2 Velocity { get; set; }
         public bool IsGrounded { get; set; }
 
-        private readonly float _gravity;
-        private readonly float _jumpStrength;
-        private readonly float _moveSpeed;
+        private float _gravity;
+        private float _jumpStrength;
+        private float _moveSpeed;
 
         public Physics(Vector2 startPosition, float gravity, float jumpStrength, float moveSpeed)
         {

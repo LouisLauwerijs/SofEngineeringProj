@@ -28,7 +28,7 @@ namespace projectSoftwareEngineering
             return false;
         }
 
-        public void FloorCollisionCheck(Physics physics, List<ICollidable> collidables)
+        public void SolidCollisionCheck(Physics physics, List<ICollidable> collidables)
         {
             Rectangle bounds = new Rectangle(
                 (int)physics.Position.X + 18,
@@ -124,43 +124,6 @@ namespace projectSoftwareEngineering
                             physics.Velocity = new Vector2(physics.Velocity.X, 0);
                             physics.IsGrounded = true;
                         }
-                    }
-                }
-            }
-        }
-
-        public void WallCollisionCheck(Physics physics, List<ICollidable> collidables)
-        {
-            Rectangle bounds = new Rectangle(
-                (int)physics.Position.X + 18,
-                (int)physics.Position.Y + 18,
-                28, 32
-            );
-
-            foreach (var collidable in collidables)
-            {
-                if (!collidable.IsSolid) continue;
-                if (!(collidable is Wall)) continue;
-
-                if (bounds.Intersects(collidable.Bounds))
-                {
-                    // Hit left side
-                    if (physics.Velocity.X > 0)
-                    {
-                        physics.Position = new Vector2(
-                            collidable.Bounds.Left - 28 - 18,
-                            physics.Position.Y
-                        );
-                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
-                    }
-                    // Hit right side
-                    else if (physics.Velocity.X < 0)
-                    {
-                        physics.Position = new Vector2(
-                            collidable.Bounds.Right - 18,
-                            physics.Position.Y
-                        );
-                        physics.Velocity = new Vector2(0, physics.Velocity.Y);
                     }
                 }
             }

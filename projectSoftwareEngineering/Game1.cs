@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
+using System.Threading;
 using static System.Formats.Asn1.AsnWriter;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -45,6 +47,12 @@ namespace projectSoftwareEngineering
         //camera
         private Camera _camera;
 
+        //enemies and spikes
+        private List<Enemy> _enemies;
+        private List<Spike> _spikes;
+        private Texture2D _enemyTexture;
+        private Texture2D _spikeTexture;
+
         //bigger sprite
         RenderTarget2D _renderTarget;
         int virtualWidth = 500;
@@ -61,6 +69,9 @@ namespace projectSoftwareEngineering
         {
             _collidables = new List<ICollidable>();
             _collisionManager = new CollisionManager();
+
+            _enemies = new List<Enemy>();
+            _spikes = new List<Spike>();
             base.Initialize();
         }
 
@@ -70,6 +81,7 @@ namespace projectSoftwareEngineering
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
+            //TODO: Add all textures for platforms, enemies, floors, spikes
 
             var inputHandler = new KeyboardInputChecker();
             var heroConfig = new CharacterConfig { StartPosition = new Vector2(100, 50) };
@@ -81,9 +93,13 @@ namespace projectSoftwareEngineering
                 virtualHeight
             );
 
+            // TEMPORARY PLATFORM CREATION
             _floorTexture = CreateColoredTexture(Color.DarkGreen);
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
+
+            _enemyTexture = CreateColoredTexture(Color.Red);
+            _spikeTexture = CreateColoredTexture(Color.DarkRed);
 
             _camera = new Camera(virtualWidth);
 
@@ -101,25 +117,24 @@ namespace projectSoftwareEngineering
             Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 15);
             _collidables.Add(platform3);
 
-            //testFloor
-            Floor test = new Floor(_floorTexture, 100, virtualHeight - 50, 50, 50);
-            _collidables.Add(test);
-
-            // Left wall
-            Wall leftWall = new Wall(_wallTexture, -155, 0, 160, virtualHeight);
+            // Left wall -> floors have the same logic as walls
+            Floor leftWall = new Floor(_wallTexture, -155, 0, 160, virtualHeight);
             _collidables.Add(leftWall);
 
             //Right wall
-            Wall RightWall = new Wall(_wallTexture, 1000, 0, 500, virtualHeight);
+            Floor RightWall = new Floor(_wallTexture, 1000, 0, 500, virtualHeight);
             _collidables.Add(RightWall);
 
+            //enemy 1
+            WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 2); // Start higher, let it fall
+            _enemies.Add(enemy1);
+
+            //spike
+            Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 30, 20, 20);
+            _spikes.Add(spike);
+            _collidables.Add(spike);
         }
-        private Texture2D CreateColoredTexture(Color color)
-        {
-            Texture2D texture = new Texture2D(GraphicsDevice, 1, 1);
-            texture.SetData(new[] { color });
-            return texture;
-        }
+        
 
         protected override void Update(GameTime gameTime)
         {
@@ -136,6 +151,61 @@ namespace projectSoftwareEngineering
                     gameObject.Update(gameTime);
                 }
             }
+
+            foreach (Enemy enemy in _enemies.ToList())
+            {
+                enemy.Update(gameTime, _collidables, _collisionManager);
+
+                if (enemy.Health.CurrentHealth > 0 && enemy.Bounds.Intersects(_hero.Bounds))
+                {
+                    _hero.Health.TakeDamage();
+
+                    if (_hero.Health.CurrentHealth > 0) 
+                    {
+                        if (_hero.Bounds.Center.X > enemy.Bounds.Center.X)
+                        {
+                            _hero.ApplyKnockback(3); 
+                        }
+                        else 
+                        {
+                            _hero.ApplyKnockback(-3); 
+                        }
+                    }
+                }
+
+                // Remove dead enemies
+                if (enemy.Health.CurrentHealth <= 0)
+                {
+                    enemy.Die();
+                    _enemies.Remove(enemy);
+                }
+            }
+
+            foreach (Spike spike in _spikes)
+            {
+                if (spike.Bounds.Intersects(_hero.Bounds))
+                {
+                    _hero.Health.TakeDamage();
+
+                    if (_hero.Health.CurrentHealth > -1)
+                    {
+                        if (_hero.Bounds.Center.X > spike.Bounds.Center.X)
+                        {
+                            _hero.ApplyKnockback(3);
+                        }
+                        else
+                        {
+                            _hero.ApplyKnockback(-3);
+                        }
+                    }
+                }
+            }
+
+            if (_hero.Health.CurrentHealth <= 0)
+            {
+                _hero.Die();
+            }
+
             base.Update(gameTime);
         }
 
@@ -146,7 +216,7 @@ namespace projectSoftwareEngineering
 
             _spriteBatch.Begin(transformMatrix: _camera.Transform);
 
-            // Draw platforms and floors
+            //Draw platforms and floors
             foreach (var collidable in _collidables)
             {
                 if (collidable is IGameObject gameObject)
@@ -154,14 +224,20 @@ namespace projectSoftwareEngineering
                     gameObject.Draw(_spriteBatch);
                 }
 
-                DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 2); //--------- debug
+                DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 1); //--------- debug
             }
 
-            // Draw hero
+            //Draw enemies
+            foreach (var enemy in _enemies)
+            {
+                enemy.Draw(_spriteBatch);
+                DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
+            }
+
+            //Draw hero
             _hero.Draw(_spriteBatch);
 
-
-            DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 2); //------------------- debug
+            DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
 
             _spriteBatch.End();
 
@@ -173,10 +249,33 @@ namespace projectSoftwareEngineering
                 new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
                 Color.White
             );
+
+            DrawHealth();
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+        private Texture2D CreateColoredTexture(Color color)
+        {
+            Texture2D texture = new Texture2D(GraphicsDevice, 1, 1);
+            texture.SetData(new[] { color });
+            return texture;
+        }
+        public void DrawHealth()
+        {
+            for (int i = 0; i < _hero.Health.MaxHealth; i++)
+            {
+                Color heartColor = i < _hero.Health.CurrentHealth ? Color.Red : Color.DarkGray;
 
+                Rectangle heartRectangle = new Rectangle(
+                    20 + (i * 40),
+                    20,
+                    30,
+                    30
+                );
+
+                _spriteBatch.Draw(_debugTexture, heartRectangle, heartColor);
+            }
+        }
     }
 }

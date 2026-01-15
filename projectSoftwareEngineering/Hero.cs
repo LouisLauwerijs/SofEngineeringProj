@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using projectSoftwareEngineering.Animations;
 
 namespace projectSoftwareEngineering
 {
-    public class Hero : IGameObject, ICollidable
+    public class Hero : IGameObject, ICollidable, IDamageable
     {
         private Texture2D _texture;
         private IInputChecker _inputHandler;
-        private Physics _physics;
+        public Physics _physics;
         private AnimationController _animationController;
         private CollisionManager _collisionManager;
 
         private SpriteEffects _direction = SpriteEffects.None;
 
+        private float _knockbackTimer = 0;
+
+        public Health Health { get; set; }
         public Rectangle Bounds => new Rectangle(
             (int)_physics.Position.X+18,
             (int)_physics.Position.Y+18,
@@ -43,18 +42,24 @@ namespace projectSoftwareEngineering
             );
 
             _animationController = new AnimationController(AnimationFactory.CreateHeroAnimations());
+
+            Health = new Health(3);
         }
 
         public void Update(GameTime gameTime, List<ICollidable> collidables)
         {
+            if (_knockbackTimer > 0)
+            {
+                _knockbackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
             HandleMovement();
 
             _physics.ApplyGravity();
 
             _physics.UpdateVerticalPosition();
-            _collisionManager.FloorCollisionCheck(_physics, collidables);
+            _collisionManager.SolidCollisionCheck(_physics, collidables);
             _collisionManager.PlatformCollisionCheck(_physics, collidables);
-            _collisionManager.WallCollisionCheck(_physics, collidables);
+            _collisionManager.SolidCollisionCheck(_physics, collidables);
 
             if (_physics.Velocity.Y >= 0) 
             {
@@ -63,16 +68,15 @@ namespace projectSoftwareEngineering
 
             UpdateAnimation();
             _animationController.Update(gameTime);
+            Health.VulnerableUpdate(gameTime);
         }
         public void Update(GameTime gameTime)
         {
-            //just here for the IGameObject property.
+            //Just here for the IGameObject property.
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            
-
             spriteBatch.Draw(
                 _texture,
                 _physics.Position,
@@ -88,6 +92,9 @@ namespace projectSoftwareEngineering
 
         private void HandleMovement()
         {
+            if (_knockbackTimer > 0)
+                return;
+
             bool isMoving = false;
 
             if (_inputHandler.IsMovingRight())
@@ -128,6 +135,17 @@ namespace projectSoftwareEngineering
             {
                 _animationController.JumpAnimation();
             }
+        }
+
+        public void Die()
+        {
+            
+        }
+        public void ApplyKnockback(float direction)
+        {
+            _knockbackTimer = 0.5f;
+            System.Console.WriteLine($"Knockback applied! Timer: {_knockbackTimer}");
+            _physics.Position += new Vector2(direction * 15, 0);
         }
     }
 }
