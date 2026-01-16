@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ButtonFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:ButtonFont.spritefont
+
 #begin characterSpritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -48,4 +55,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:oak_woods_tileset.png
+
+#begin TitleFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:TitleFont.spritefont
 

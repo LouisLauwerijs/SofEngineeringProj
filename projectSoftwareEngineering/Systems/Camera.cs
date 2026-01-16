@@ -23,7 +23,7 @@ namespace projectSoftwareEngineering.Systems
 
         public void Follow(Vector2 positionPlayer)
         {
-            _position = positionPlayer.X - _visibility / 2f + 80;
+            _position = positionPlayer.X - _visibility / 2f - 60;
 
             UpdateTransform();
         }

@@ -6,12 +6,21 @@ using projectSoftwareEngineering.Characters.Enemies;
 using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;
+using projectSoftwareEngineering.Levels;
 using projectSoftwareEngineering.Systems;
+using projectSoftwareEngineering.UI;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace projectSoftwareEngineering
 {
+    public enum GameState
+    {
+        MainMenu,
+        Playing,
+        Paused
+    }
+
     public class Game1 : Game
     {
         private Texture2D _debugTexture; 
@@ -32,6 +41,11 @@ namespace projectSoftwareEngineering
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        //Zoom
+        RenderTarget2D _renderTarget;
+        const int RENDER_WIDTH = 800;
+        const int RENDER_HEIGHT = 450;
 
         //sprites
         private Texture2D _heroTexture;
@@ -56,10 +70,16 @@ namespace projectSoftwareEngineering
         private Texture2D _spikeTexture;
         private Texture2D _jumpingEnemyTexture;
 
-        //bigger sprite
-        RenderTarget2D _renderTarget;
-        int virtualWidth = 600;
-        int virtualHeight = 360;
+        //menu
+        private GameState _currentState = GameState.MainMenu;
+        private MainMenu _mainMenu;
+        private SpriteFont _titleFont;
+        private SpriteFont _buttonFont;
+        private MouseState _previousMouseState;
+
+        //levels
+        private LevelFactory _levelFactory;
+        private Level _currentLevel;
 
         public Game1()
         {
@@ -69,6 +89,10 @@ namespace projectSoftwareEngineering
             _graphics.IsFullScreen = true;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            Window.IsBorderless = true;
+            Window.Position = new Point(0, 0);
+
             _graphics.ApplyChanges();
         }
 
@@ -86,69 +110,45 @@ namespace projectSoftwareEngineering
         {
             _debugTexture = CreateColoredTexture(Color.White); //-------------- debug
 
+            _renderTarget = new RenderTarget2D(GraphicsDevice, RENDER_WIDTH, RENDER_HEIGHT);
+
+            //TODO: Add all textures for platforms, enemies, floors, spikes
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
             _floorTexture = Content.Load<Texture2D>("floorSprite");
-            //TODO: Add all textures for platforms, enemies, floors, spikes
+            
+            _titleFont = Content.Load<SpriteFont>("TitleFont");
+            _buttonFont = Content.Load<SpriteFont>("ButtonFont");
 
             var inputHandler = new KeyboardInputChecker();
             var heroConfig = new HeroConfig();
             _hero = new Hero(_heroTexture, inputHandler, heroConfig, _collisionManager);
 
-            _renderTarget = new RenderTarget2D(
-                GraphicsDevice,
-                virtualWidth,
-                virtualHeight
-            );
+            Texture2D buttonTexture = CreateColoredTexture(Color.DarkGray);
 
-            // TEMPORARY PLATFORM CREATION
+            int screenWidth = GraphicsDevice.Viewport.Width;
+            int screenHeight = GraphicsDevice.Viewport.Height;
+
+            _mainMenu = new MainMenu(buttonTexture, _titleFont, _buttonFont, RENDER_WIDTH, RENDER_HEIGHT, screenWidth, screenHeight);
 
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
-
             _walkingEnemyTexture = CreateColoredTexture(Color.Red);
-            _spikeTexture = CreateColoredTexture(Color.DarkRed);
             _jumpingEnemyTexture = CreateColoredTexture(Color.Purple);
+            _spikeTexture = CreateColoredTexture(Color.DarkRed);
 
-            _camera = new Camera(virtualWidth);
-            
-            // Create floor 
-            Floor floor = new Floor(_floorTexture, 0, virtualHeight-15, 1000, 30);
-            _collidables.Add(floor);
-
-            // platforms
-            Platform platform1 = new Platform(_platformTexture, 80, virtualHeight - 80, 50, 7);
-            _collidables.Add(platform1);
-
-            Platform platform2 = new Platform(_platformTexture, 220, virtualHeight - 130, 50, 7);
-            _collidables.Add(platform2);
-
-            Platform platform3 = new Platform(_platformTexture, 360, virtualHeight - 180, 50, 7);
-            _collidables.Add(platform3);
-
-            // Left wall -> floors have the same logic as walls
-            Floor leftWall = new Floor(_wallTexture, -155, 0, 160, virtualHeight);
-            _collidables.Add(leftWall);
-
-            //Right wall
-            Floor RightWall = new Floor(_wallTexture, 1000, 0, 500, virtualHeight);
-            _collidables.Add(RightWall);
-
-            //enemy 1
-            WalkingEnemy enemy1 = new WalkingEnemy(_walkingEnemyTexture, new Vector2(300, 100), 1); 
-            _enemies.Add(enemy1);
-            //enemyplatform test
-            Platform testFloor = new Platform(_platformTexture, 300, 200, 80, 7);
-            _collidables.Add(testFloor);
-
-            //jumping enemy
-            JumpingEnemy enemy2 = new JumpingEnemy(_jumpingEnemyTexture, new Vector2(500, 100), 1);
-            _enemies.Add(enemy2);
-
-            //spike
-            Spike spike = new Spike(_spikeTexture, 180, virtualHeight - 35, 20, 20);
-            _spikes.Add(spike);
-            _collidables.Add(spike);
+            LevelConfig levelConfig = new LevelConfig(
+                    GraphicsDevice,
+                    RENDER_WIDTH,
+                    RENDER_HEIGHT,
+                    _heroTexture,
+                    _floorTexture,
+                    _platformTexture,
+                    _wallTexture,
+                    _walkingEnemyTexture,
+                    _spikeTexture
+                );
+            _levelFactory = new LevelFactory(levelConfig);
         }
         
 
@@ -157,108 +157,133 @@ namespace projectSoftwareEngineering
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _hero.Update(gameTime, _collidables);
-            _camera.Follow(_hero.Bounds.Center.ToVector2());
-
-            foreach (var collidable in _collidables)
+            MouseState currentMouseState = Mouse.GetState();
+            if (_currentState == GameState.MainMenu)
             {
-                if (collidable is IGameObject gameObject)
+                int? selectedLevel = _mainMenu.Update(
+                currentMouseState,
+                _previousMouseState
+            );
+
+                if (selectedLevel.HasValue)
                 {
-                    gameObject.Update(gameTime);
+                    LoadLevel(selectedLevel.Value);
+                    _currentState = GameState.Playing;
                 }
             }
-
-            foreach (Enemy enemy in _enemies.ToList())
+            else if (_currentState == GameState.Playing)
             {
-                enemy.Update(gameTime, _collidables, _collisionManager);
+                _hero.Update(gameTime, _collidables);
+                _camera.Follow(_hero.Bounds.Center.ToVector2());
 
-                if (enemy.Health.CurrentHealth > 0 && enemy.Bounds.Intersects(_hero.Bounds))
+                foreach (var collidable in _collidables)
                 {
-                    _hero.Health.TakeDamage();
-
-                    if (_hero.Health.CurrentHealth > 0) 
+                    if (collidable is IGameObject gameObject)
                     {
-                        if (_hero.Bounds.Center.X > enemy.Bounds.Center.X)
+                        gameObject.Update(gameTime);
+                    }
+                }
+
+                foreach (Enemy enemy in _enemies.ToList())
+                {
+                    enemy.Update(gameTime, _collidables, _collisionManager);
+
+                    if (enemy.Health.CurrentHealth > 0 && enemy.Bounds.Intersects(_hero.Bounds))
+                    {
+                        _hero.Health.TakeDamage();
+
+                        if (_hero.Health.CurrentHealth > 0)
                         {
-                            _hero.ApplyKnockback(3); 
+                            if (_hero.Bounds.Center.X > enemy.Bounds.Center.X)
+                            {
+                                _hero.ApplyKnockback(3);
+                            }
+                            else
+                            {
+                                _hero.ApplyKnockback(-3);
+                            }
                         }
-                        else 
+                    }
+
+                    if (enemy.Health.CurrentHealth <= 0)
+                    {
+                        enemy.Die();
+                        _enemies.Remove(enemy);
+                    }
+                }
+
+                foreach (Spike spike in _spikes)
+                {
+                    if (spike.Bounds.Intersects(_hero.Bounds))
+                    {
+                        _hero.Health.TakeDamage();
+
+                        if (_hero.Health.CurrentHealth > 0)
                         {
-                            _hero.ApplyKnockback(-3); 
+                            if (_hero.Bounds.Center.X > spike.Bounds.Center.X)
+                            {
+                                _hero.ApplyKnockback(3);
+                            }
+                            else
+                            {
+                                _hero.ApplyKnockback(-3);
+                            }
                         }
                     }
                 }
 
-                // Remove dead enemies
-                if (enemy.Health.CurrentHealth <= 0)
+                if (_hero.Health.CurrentHealth <= 0)
                 {
-                    enemy.Die();
-                    _enemies.Remove(enemy);
+                    _hero.Die();
                 }
             }
-
-            foreach (Spike spike in _spikes)
-            {
-                if (spike.Bounds.Intersects(_hero.Bounds))
-                {
-                    _hero.Health.TakeDamage();
-
-                    if (_hero.Health.CurrentHealth > -1)
-                    {
-                        if (_hero.Bounds.Center.X > spike.Bounds.Center.X)
-                        {
-                            _hero.ApplyKnockback(3);
-                        }
-                        else
-                        {
-                            _hero.ApplyKnockback(-3);
-                        }
-                    }
-                }
-            }
-
-            if (_hero.Health.CurrentHealth <= 0)
-            {
-                _hero.Die();
-            }
-
+            _previousMouseState = currentMouseState;
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(_renderTarget);
-            GraphicsDevice.Clear(Color.Gray);
+            GraphicsDevice.Clear(_currentState == GameState.MainMenu ? Color.Black : Color.Gray);
 
-            _spriteBatch.Begin(transformMatrix: _camera.Transform);
+            _spriteBatch.Begin(transformMatrix: _currentState == GameState.Playing ? _camera.Transform : null);
 
-            //Draw platforms and floors
-            foreach (var collidable in _collidables)
+            if (_currentState == GameState.MainMenu)
             {
-                if (collidable is IGameObject gameObject)
+                _mainMenu.Draw(_spriteBatch);
+            }
+
+            else if (_currentState==GameState.Playing)
+            {
+                //Draw platforms and floors
+                foreach (var collidable in _collidables)
                 {
-                    gameObject.Draw(_spriteBatch);
+                    if (collidable is IGameObject gameObject)
+                    {
+                        gameObject.Draw(_spriteBatch);
+                    }
+
+                    DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 1); //--------- debug
                 }
 
-                DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 1); //--------- debug
+                //Draw enemies
+                foreach (var enemy in _enemies)
+                {
+                    enemy.Draw(_spriteBatch);
+                    DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
+                }
+
+                //Draw hero
+                _hero.Draw(_spriteBatch);
+
+                DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
+
+                
             }
-
-            //Draw enemies
-            foreach (var enemy in _enemies)
-            {
-                enemy.Draw(_spriteBatch);
-                DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
-            }
-
-            //Draw hero
-            _hero.Draw(_spriteBatch);
-
-            DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
 
             _spriteBatch.End();
 
             GraphicsDevice.SetRenderTarget(null);
-
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             _spriteBatch.Draw(
                 _renderTarget,
@@ -268,7 +293,6 @@ namespace projectSoftwareEngineering
 
             DrawHealth();
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
         private Texture2D CreateColoredTexture(Color color)
@@ -292,6 +316,17 @@ namespace projectSoftwareEngineering
 
                 _spriteBatch.Draw(_debugTexture, heartRectangle, heartColor);
             }
+        }
+        public void LoadLevel(int level)
+        {
+            _currentLevel = _levelFactory.CreateLevel(level);
+            _currentLevel.Load(_collisionManager);
+
+            _hero = _currentLevel.Hero;
+            _camera = _currentLevel.Camera;
+            _collidables = _currentLevel.Collidables;
+            _enemies = _currentLevel.Enemies;
+            _spikes = _currentLevel.Spikes;
         }
     }
 }
