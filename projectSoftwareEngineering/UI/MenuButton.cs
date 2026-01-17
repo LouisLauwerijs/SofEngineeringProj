@@ -18,32 +18,18 @@ namespace projectSoftwareEngineering.UI
         private Color _Color = Color.Gray;
         private Color _hoverColor = Color.LimeGreen;
         private bool _isHovered;
-        private int _virtualWidth; 
-        private int _virtualHeight;
-        private int _screenWidth;
-        private int _screenHeight;
 
-        public MenuButton(Texture2D texture, SpriteFont font, string text, int x, int y, int width, int height, int virtualWidth, int virtualHeight, int screenWidth, int screenHeight)
+        public MenuButton(Texture2D texture, SpriteFont font, string text, int x, int y, int width, int height)
         {
             _texture = texture;
             _font = font;
             Text = text;
             Bounds = new Rectangle(x, y, width, height);
-            _virtualWidth = virtualWidth;
-            _virtualHeight = virtualHeight;
-            _screenWidth = screenWidth;
-            _screenHeight = screenHeight;
         }
 
         public void Update(MouseState mouseState)
         {
-            float scaleX = (float)_virtualWidth / _screenWidth;
-            float scaleY = (float)_virtualHeight / _screenHeight;
-
-            Point mousePos = new Point(
-                (int)(mouseState.X * scaleX),
-                (int)(mouseState.Y * scaleY)
-            );
+            Point mousePos = new Point(mouseState.X,mouseState.Y);
             _isHovered = Bounds.Contains(mousePos);
         }
 

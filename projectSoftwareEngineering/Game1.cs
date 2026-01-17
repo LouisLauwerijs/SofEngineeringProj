@@ -120,16 +120,12 @@ namespace projectSoftwareEngineering
             _titleFont = Content.Load<SpriteFont>("TitleFont");
             _buttonFont = Content.Load<SpriteFont>("ButtonFont");
 
-            var inputHandler = new KeyboardInputChecker();
-            var heroConfig = new HeroConfig();
-            _hero = new Hero(_heroTexture, inputHandler, heroConfig, _collisionManager);
-
             Texture2D buttonTexture = CreateColoredTexture(Color.DarkGray);
 
             int screenWidth = GraphicsDevice.Viewport.Width;
             int screenHeight = GraphicsDevice.Viewport.Height;
 
-            _mainMenu = new MainMenu(buttonTexture, _titleFont, _buttonFont, RENDER_WIDTH, RENDER_HEIGHT, screenWidth, screenHeight);
+            _mainMenu = new MainMenu(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
 
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
@@ -243,18 +239,25 @@ namespace projectSoftwareEngineering
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(_renderTarget);
-            GraphicsDevice.Clear(_currentState == GameState.MainMenu ? Color.Black : Color.Gray);
-
-            _spriteBatch.Begin(transformMatrix: _currentState == GameState.Playing ? _camera.Transform : null);
-
             if (_currentState == GameState.MainMenu)
             {
+                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.Clear(Color.Black);
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 _mainMenu.Draw(_spriteBatch);
+                _spriteBatch.End();
             }
 
             else if (_currentState==GameState.Playing)
             {
+                GraphicsDevice.SetRenderTarget(_renderTarget);
+                GraphicsDevice.Clear(Color.Gray);
+
+                _spriteBatch.Begin(
+                    samplerState: SamplerState.PointClamp,
+                    transformMatrix: _camera.Transform
+                );
+
                 //Draw platforms and floors
                 foreach (var collidable in _collidables)
                 {
@@ -262,8 +265,6 @@ namespace projectSoftwareEngineering
                     {
                         gameObject.Draw(_spriteBatch);
                     }
-
-                    DrawRectangleOutline(_spriteBatch, collidable.Bounds, Color.Red, 1); //--------- debug
                 }
 
                 //Draw enemies
@@ -275,24 +276,22 @@ namespace projectSoftwareEngineering
 
                 //Draw hero
                 _hero.Draw(_spriteBatch);
-
                 DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
 
-                
+                _spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _spriteBatch.Draw(
+                    _renderTarget,
+                    new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
+                    Color.White
+                );
+
+                DrawHealth();
+                _spriteBatch.End();
             }
-
-            _spriteBatch.End();
-
-            GraphicsDevice.SetRenderTarget(null);
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(
-                _renderTarget,
-                new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
-                Color.White
-            );
-
-            DrawHealth();
-            _spriteBatch.End();
+            
             base.Draw(gameTime);
         }
         private Texture2D CreateColoredTexture(Color color)

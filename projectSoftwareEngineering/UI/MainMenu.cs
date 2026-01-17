@@ -17,18 +17,14 @@ namespace projectSoftwareEngineering.UI
         private List<MenuButton> _levelButtons;
         private string _title = "TEMP NAME";
 
-        private int _virtualWidth;
-        private int _virtualHeight;
         private int _screenWidth;
         private int _screenHeight;
 
-        public MainMenu(Texture2D buttonTexture, SpriteFont titleFont, SpriteFont buttonFont, int virtualWidth, int virtualHeight, int screenWidth, int screenHeight)
+        public MainMenu(Texture2D buttonTexture, SpriteFont titleFont, SpriteFont buttonFont, int screenWidth, int screenHeight)
         {
             _buttonTexture = buttonTexture;
             _titleFont = titleFont;
             _buttonFont = buttonFont;
-            _virtualWidth = virtualWidth;
-            _virtualHeight = virtualHeight;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
 
@@ -39,24 +35,27 @@ namespace projectSoftwareEngineering.UI
         {
             _levelButtons = new List<MenuButton>();
 
-            int buttonWidth = 200;
-            int buttonHeight = 80;
-            int startY = _virtualHeight / 2;
-            int spacing = 70;
+            int buttonWidth = 300;
+            int buttonHeight = 250;
+            int startY = _screenHeight / 2;
+            int spacing = 40;
+            int numberOfLevels = 3;
 
-            for (int i = 1; i <= 3; i++) // i <=3 means 3 levels
+            int totalWidth = (buttonWidth * numberOfLevels) + (spacing * (numberOfLevels - 1));
+
+            int startX = (_screenWidth - totalWidth) / 2;
+            int y = (_screenHeight / 2) + 50;
+
+            for (int i = 1; i <= numberOfLevels; i++) 
             {
-                int x = (_virtualWidth - buttonWidth) / 2;
-                int y = startY + ((i - 1) * spacing);
+                int x = startX + ((i - 1) * (buttonWidth + spacing));
 
                 MenuButton button = new MenuButton(
                     _buttonTexture,
                     _buttonFont,
                     $"Level {i}",
                     x, y,
-                    buttonWidth, buttonHeight,
-                    _virtualWidth, _virtualHeight,
-                    _screenWidth, _screenHeight
+                    buttonWidth, buttonHeight
                 );
 
                 _levelButtons.Add(button);
@@ -87,8 +86,8 @@ namespace projectSoftwareEngineering.UI
             //Title
             Vector2 titleSize = _titleFont.MeasureString(_title);
             Vector2 titlePosition = new Vector2(
-                (_virtualWidth - titleSize.X) / 2,
-                _virtualHeight / 4
+                (_screenWidth - titleSize.X) / 2,
+                _screenHeight / 4
             );
             spriteBatch.DrawString(_titleFont, _title, titlePosition, Color.White);
 
