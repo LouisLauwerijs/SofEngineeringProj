@@ -18,28 +18,14 @@ namespace projectSoftwareEngineering
     {
         MainMenu,
         Playing,
-        Paused
+        Paused,
+        Dead
     }
     
 
     public class Game1 : Game
     {
         private Texture2D _debugTexture; 
-
-        //private void DrawRectangleOutline(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness = 2)
-        //{
-        //    // Top
-        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, rect.Width, thickness), color);
-        //    // Bottom
-        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), color);
-        //    // Left
-        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, thickness, rect.Height), color);
-        //    // Right
-        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
-        //} debug
-
-        
-
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -74,13 +60,19 @@ namespace projectSoftwareEngineering
         //menu
         private GameState _currentState = GameState.MainMenu;
         private MainMenu _mainMenu;
+        private DeathScreen _deathScreen;
         private SpriteFont _titleFont;
         private SpriteFont _buttonFont;
         private MouseState _previousMouseState;
 
+        //death
+        private float _deathTimer = 0f;
+        private const float DEATH_ANIMATION_DURATION = 1.4f;
+
         //levels
         private LevelFactory _levelFactory;
         private Level _currentLevel;
+        private int _currentLevelNr;
 
         public Game1()
         {
@@ -127,6 +119,7 @@ namespace projectSoftwareEngineering
             int screenHeight = GraphicsDevice.Viewport.Height;
 
             _mainMenu = new MainMenu(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
+            _deathScreen = new DeathScreen(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
 
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
@@ -229,9 +222,34 @@ namespace projectSoftwareEngineering
                     }
                 }
 
-                if (_hero.Health.CurrentHealth <= 0)
+                if (_hero.Health.CurrentHealth <= 0 && !_hero.isDead)
                 {
                     _hero.Die();
+                    _deathTimer = 0f;
+                }
+
+                if (_hero.isDead)
+                {
+                    _deathTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (_deathTimer >= DEATH_ANIMATION_DURATION)
+                    {
+                        _currentState = GameState.Dead;
+                    }
+                }
+            }
+            else if (_currentState == GameState.Dead)
+            {
+                string action = _deathScreen.Update(currentMouseState, _previousMouseState);
+
+                if (action == "retry")
+                {
+                    LoadLevel(_currentLevelNr);
+                    _currentState = GameState.Playing;
+                }
+                else if (action == "menu")
+                {
+                    _currentState = GameState.MainMenu;
                 }
             }
             _previousMouseState = currentMouseState;
@@ -249,7 +267,7 @@ namespace projectSoftwareEngineering
                 _spriteBatch.End();
             }
 
-            else if (_currentState==GameState.Playing)
+            else if (_currentState==GameState.Playing || _currentState==GameState.Dead)
             {
                 GraphicsDevice.SetRenderTarget(_renderTarget);
                 GraphicsDevice.Clear(Color.Gray);
@@ -272,12 +290,10 @@ namespace projectSoftwareEngineering
                 foreach (var enemy in _enemies)
                 {
                     enemy.Draw(_spriteBatch);
-                    //DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
                 }
 
                 //Draw hero
                 _hero.Draw(_spriteBatch);
-                //DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //debug
 
                 _spriteBatch.End();
 
@@ -290,6 +306,16 @@ namespace projectSoftwareEngineering
                 );
 
                 DrawHealth();
+
+                if (_currentState == GameState.Dead)
+                {
+                    _spriteBatch.Draw(
+                        _debugTexture,
+                        new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), Color.Black * 0.7f
+                    );
+                    _deathScreen.Draw(_spriteBatch);
+                }
+
                 _spriteBatch.End();
             }
             
@@ -319,6 +345,7 @@ namespace projectSoftwareEngineering
         }
         public void LoadLevel(int level)
         {
+            _currentLevelNr = level;
             _currentLevel = _levelFactory.CreateLevel(level);
             _currentLevel.Load(_collisionManager);
 

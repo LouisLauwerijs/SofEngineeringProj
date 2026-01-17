@@ -18,7 +18,7 @@ namespace projectSoftwareEngineering.Characters.Enemies
         public Rectangle Bounds => new Rectangle(
             (int)_physics.Position.X + 18,
             (int)_physics.Position.Y + 18,
-            28, 32
+            28, 30
         );
 
         public Health Health { get; set; }
