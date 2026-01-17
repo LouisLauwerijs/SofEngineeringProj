@@ -52,12 +52,6 @@ namespace projectSoftwareEngineering.Characters
 
         public void Update(GameTime gameTime, List<ICollidable> collidables)
         {
-            if (isDead)
-            {
-                _animationController.Update(gameTime);
-                return;
-            }
-
             if (_knockbackTimer > 0)
             {
                 _knockbackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -81,9 +75,7 @@ namespace projectSoftwareEngineering.Characters
             Health.VulnerableUpdate(gameTime);
         }
         public void Update(GameTime gameTime)
-        {
-            //Just here for the IGameObject property.
-        }
+        {}
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -155,8 +147,6 @@ namespace projectSoftwareEngineering.Characters
             isDead = true;
             _animationController.DieAnimation();
             _physics.StopHorizontalMovement();
-            _physics.StopHorizontalMovement();
-            _physics.Velocity = Vector2.Zero;
         }
         public void ApplyKnockback(float direction)
         {

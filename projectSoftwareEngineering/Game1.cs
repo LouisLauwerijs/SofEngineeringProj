@@ -26,19 +26,19 @@ namespace projectSoftwareEngineering
     {
         private Texture2D _debugTexture; 
 
-        private void DrawRectangleOutline(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness = 2)
-        {
-            // Top
-            spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, rect.Width, thickness), color);
-            // Bottom
-            spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), color);
-            // Left
-            spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, thickness, rect.Height), color);
-            // Right
-            spriteBatch.Draw(_debugTexture, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
-        }
+        //private void DrawRectangleOutline(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness = 2)
+        //{
+        //    // Top
+        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, rect.Width, thickness), color);
+        //    // Bottom
+        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), color);
+        //    // Left
+        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.X, rect.Y, thickness, rect.Height), color);
+        //    // Right
+        //    spriteBatch.Draw(_debugTexture, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), color);
+        //} debug
 
-        //-------------------------------- debug 
+        
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -277,7 +277,7 @@ namespace projectSoftwareEngineering
 
                 //Draw hero
                 _hero.Draw(_spriteBatch);
-                //DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
+                //DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //debug
 
                 _spriteBatch.End();
 
