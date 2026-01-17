@@ -18,7 +18,7 @@ namespace projectSoftwareEngineering.Levels
         public override void BuildLevel()
         {
             // Floor
-            Floor floor = new Floor(_floorTexture, 0, _screenHeight - 15, 1000, 30);
+            Floor floor = new Floor(_floorTexture, 0, _screenHeight - 15, 2000, 30);
             Collidables.Add(floor);
 
             // Platforms
@@ -35,9 +35,6 @@ namespace projectSoftwareEngineering.Levels
             Floor leftWall = new Floor(_wallTexture, -155, 0, 160, _screenHeight);
             Collidables.Add(leftWall);
 
-            Floor rightWall = new Floor(_wallTexture, 1000, 0, 500, _screenHeight);
-            Collidables.Add(rightWall);
-
             // Enemy with platform
             WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(300, 100), 1);
             Enemies.Add(enemy1);
@@ -48,6 +45,10 @@ namespace projectSoftwareEngineering.Levels
             Spike spike = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
             Spikes.Add(spike);
             Collidables.Add(spike);
+
+            //Completion coin
+            Coin coin = new Coin(_cointTexture, (_screenWidth - 500), (_screenHeight - 50), 25, 25);
+            Collectibles.Add(coin);
         }
     }
 }

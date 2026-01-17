@@ -18,6 +18,7 @@ namespace projectSoftwareEngineering.Levels
         public Texture2D WallTexture { get; }
         public Texture2D EnemyTexture { get; }
         public Texture2D SpikeTexture { get; }
+        public Texture2D CoinTexture { get; }
 
         public LevelConfig(
             GraphicsDevice graphicsDevice,
@@ -28,7 +29,8 @@ namespace projectSoftwareEngineering.Levels
             Texture2D platformTexture,
             Texture2D wallTexture,
             Texture2D enemyTexture,
-            Texture2D spikeTexture)
+            Texture2D spikeTexture,
+            Texture2D coinTexture)
         {
             GraphicsDevice = graphicsDevice;
             VirtualWidth = virtualWidth;
@@ -39,6 +41,7 @@ namespace projectSoftwareEngineering.Levels
             WallTexture = wallTexture;
             EnemyTexture = enemyTexture;
             SpikeTexture = spikeTexture;
+            CoinTexture = coinTexture;
         }
     }
 }

@@ -9,28 +9,28 @@ using System.Threading.Tasks;
 
 namespace projectSoftwareEngineering.UI
 {
-    public class DeathScreen
+    public class LevelCompleteScreen
     {
         private SpriteFont _titleFont;
         private SpriteFont _buttonFont;
         private Texture2D _buttonTexture;
         private List<MenuButton> _buttons;
-        private string _deathText = "YOU DIED";
-
+        private string _completeText = "LEVEL COMPLETE!";
         private int _screenWidth;
         private int _screenHeight;
+        private bool _hasNextLevel;
 
-        // Button indices for clarity
-        private const int RETRY_BUTTON_INDEX = 0;
+        private const int NEXT_LEVEL_BUTTON_INDEX = 0;
         private const int MENU_BUTTON_INDEX = 1;
 
-        public DeathScreen(Texture2D buttonTexture, SpriteFont titleFont, SpriteFont buttonFont, int screenWidth, int screenHeight)
+        public LevelCompleteScreen(Texture2D buttonTexture, SpriteFont titleFont, SpriteFont buttonFont, int screenWidth, int screenHeight)
         {
             _buttonTexture = buttonTexture;
             _titleFont = titleFont;
             _buttonFont = buttonFont;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
+            _hasNextLevel = true;
 
             CreateButtons();
         }
@@ -38,22 +38,21 @@ namespace projectSoftwareEngineering.UI
         private void CreateButtons()
         {
             _buttons = new List<MenuButton>();
-
             int buttonWidth = 250;
             int buttonHeight = 80;
             int spacing = 30;
             int startY = (_screenHeight / 2) + 100;
 
-            //Retry 
-            MenuButton retryButton = new MenuButton(
+            //Next level
+            MenuButton nextLevelButton = new MenuButton(
                 _buttonTexture,
                 _buttonFont,
-                "Retry",
+                "Next Level",
                 (_screenWidth - buttonWidth) / 2,
                 startY,
                 buttonWidth, buttonHeight
             );
-            _buttons.Add(retryButton);
+            _buttons.Add(nextLevelButton);
 
             //Menu
             MenuButton menuButton = new MenuButton(
@@ -67,18 +66,20 @@ namespace projectSoftwareEngineering.UI
             _buttons.Add(menuButton);
         }
 
-        public string Update(MouseState currentMouse, MouseState previousMouse)
+        public string Update(MouseState currentMouse, MouseState previousMouse, bool hasNextLevel)
         {
-            foreach (var button in _buttons)
+            _hasNextLevel = hasNextLevel;
+
+            if (_hasNextLevel)
             {
-                button.Update(currentMouse);
+                _buttons[NEXT_LEVEL_BUTTON_INDEX].Update(currentMouse);
+                if (_buttons[NEXT_LEVEL_BUTTON_INDEX].Clicked(currentMouse, previousMouse))
+                {
+                    return "next";
+                }
             }
 
-            if (_buttons[RETRY_BUTTON_INDEX].Clicked(currentMouse, previousMouse))
-            {
-                return "retry";
-            }
-
+            _buttons[MENU_BUTTON_INDEX].Update(currentMouse);
             if (_buttons[MENU_BUTTON_INDEX].Clicked(currentMouse, previousMouse))
             {
                 return "menu";
@@ -89,17 +90,20 @@ namespace projectSoftwareEngineering.UI
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 textSize = _titleFont.MeasureString(_deathText);
+            Vector2 textSize = _titleFont.MeasureString(_completeText);
             Vector2 textPosition = new Vector2(
                 (_screenWidth - textSize.X) / 2,
                 (_screenHeight / 2) - 100
             );
-            spriteBatch.DrawString(_titleFont, _deathText, textPosition, Color.Red);
+            spriteBatch.DrawString(_titleFont, _completeText, textPosition, Color.Gold);
 
-            foreach (var button in _buttons)
+            if (_hasNextLevel)
             {
-                button.Draw(spriteBatch);
+                _buttons[NEXT_LEVEL_BUTTON_INDEX].Draw(spriteBatch);
             }
+
+            _buttons[MENU_BUTTON_INDEX].Draw(spriteBatch);
         }
     }
 }
+

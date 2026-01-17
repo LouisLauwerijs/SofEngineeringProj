@@ -38,9 +38,6 @@ namespace projectSoftwareEngineering.Levels
             Floor leftWall = new Floor(_wallTexture, -155, 0, 160, _screenHeight);
             Collidables.Add(leftWall);
 
-            Floor rightWall = new Floor(_wallTexture, 1000, 0, 500, _screenHeight);
-            Collidables.Add(rightWall);
-
             // Multiple enemies
             WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(200, 100), 1);
             Enemies.Add(enemy1);
@@ -48,11 +45,9 @@ namespace projectSoftwareEngineering.Levels
             WalkingEnemy enemy2 = new WalkingEnemy(_enemyTexture, new Vector2(450, 80), 1);
             Enemies.Add(enemy2);
 
-            // Add a jumping enemy for variety
             JumpingEnemy jumpingEnemy = new JumpingEnemy(_enemyTexture, new Vector2(350, 100), 1);
             Enemies.Add(jumpingEnemy);
 
-            // Multiple spike hazards
             Spike spike1 = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
             Spikes.Add(spike1);
             Collidables.Add(spike1);
@@ -60,6 +55,10 @@ namespace projectSoftwareEngineering.Levels
             Spike spike2 = new Spike(_spikeTexture, 320, _screenHeight - 35, 20, 20);
             Spikes.Add(spike2);
             Collidables.Add(spike2);
+
+            //Completion coin
+            Coin coin = new Coin(_cointTexture, (_screenWidth - 500), (_screenHeight - 50), 25, 25);
+            Collectibles.Add(coin);
         }
     }
 }

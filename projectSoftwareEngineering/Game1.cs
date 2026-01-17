@@ -19,7 +19,8 @@ namespace projectSoftwareEngineering
         MainMenu,
         Playing,
         Paused,
-        Dead
+        Dead,
+        LevelComplete
     }
     
 
@@ -61,6 +62,7 @@ namespace projectSoftwareEngineering
         private GameState _currentState = GameState.MainMenu;
         private MainMenu _mainMenu;
         private DeathScreen _deathScreen;
+        private LevelCompleteScreen _levelCompleteScreen;
         private SpriteFont _titleFont;
         private SpriteFont _buttonFont;
         private MouseState _previousMouseState;
@@ -69,10 +71,15 @@ namespace projectSoftwareEngineering
         private float _deathTimer = 0f;
         private const float DEATH_ANIMATION_DURATION = 1.4f;
 
+        //collectibles
+        private List<ICollectible> _collectibles;
+        private Texture2D _coinTexture;
+
         //levels
         private LevelFactory _levelFactory;
         private Level _currentLevel;
         private int _currentLevelNr;
+        private const int MAX_LEVEL = 2;
 
         public Game1()
         {
@@ -96,6 +103,7 @@ namespace projectSoftwareEngineering
 
             _enemies = new List<Enemy>();
             _spikes = new List<Spike>();
+            _collectibles = new List<ICollectible>();
             base.Initialize();
         }
 
@@ -105,11 +113,11 @@ namespace projectSoftwareEngineering
 
             _renderTarget = new RenderTarget2D(GraphicsDevice, RENDER_WIDTH, RENDER_HEIGHT);
 
-            //TODO: Add all textures for platforms, enemies, floors, spikes
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
             _floorTexture = Content.Load<Texture2D>("floorSprite");
-            
+            _coinTexture = Content.Load<Texture2D>("MonedaP");
+
             _titleFont = Content.Load<SpriteFont>("TitleFont");
             _buttonFont = Content.Load<SpriteFont>("ButtonFont");
 
@@ -120,6 +128,7 @@ namespace projectSoftwareEngineering
 
             _mainMenu = new MainMenu(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
             _deathScreen = new DeathScreen(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
+            _levelCompleteScreen = new LevelCompleteScreen(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
 
             _platformTexture = CreateColoredTexture(Color.Brown);
             _wallTexture = CreateColoredTexture(Color.Orange);
@@ -136,7 +145,8 @@ namespace projectSoftwareEngineering
                     _platformTexture,
                     _wallTexture,
                     _walkingEnemyTexture,
-                    _spikeTexture
+                    _spikeTexture,
+                    _coinTexture
                 );
             _levelFactory = new LevelFactory(levelConfig);
         }
@@ -169,6 +179,13 @@ namespace projectSoftwareEngineering
                 foreach (var collidable in _collidables)
                 {
                     if (collidable is IGameObject gameObject)
+                    {
+                        gameObject.Update(gameTime);
+                    }
+                }
+                foreach (var collectible in _collectibles)
+                {
+                    if (collectible is IGameObject gameObject)
                     {
                         gameObject.Update(gameTime);
                     }
@@ -222,6 +239,15 @@ namespace projectSoftwareEngineering
                     }
                 }
 
+                foreach (ICollectible collectible in _collectibles.ToList())
+                {
+                    if (!collectible.IsCollected && collectible.Bounds.Intersects(_hero.Bounds))
+                    {
+                        collectible.Collect();
+                        _currentState = GameState.LevelComplete;
+                    }
+                }
+
                 if (_hero.Health.CurrentHealth <= 0 && !_hero.isDead)
                 {
                     _hero.Die();
@@ -252,6 +278,23 @@ namespace projectSoftwareEngineering
                     _currentState = GameState.MainMenu;
                 }
             }
+
+            else if (_currentState == GameState.LevelComplete)
+            {
+                bool hasNextLevel = _currentLevelNr < MAX_LEVEL;
+                string action = _levelCompleteScreen.Update(currentMouseState, _previousMouseState, hasNextLevel);
+
+                if (action == "next" && hasNextLevel)
+                {
+                    LoadLevel(_currentLevelNr + 1);
+                    _currentState = GameState.Playing;
+                }
+                else if (action == "menu")
+                {
+                    _currentState = GameState.MainMenu;
+                }
+            }
+
             _previousMouseState = currentMouseState;
             base.Update(gameTime);
         }
@@ -267,7 +310,7 @@ namespace projectSoftwareEngineering
                 _spriteBatch.End();
             }
 
-            else if (_currentState==GameState.Playing || _currentState==GameState.Dead)
+            else if (_currentState!=GameState.MainMenu)
             {
                 GraphicsDevice.SetRenderTarget(_renderTarget);
                 GraphicsDevice.Clear(Color.Gray);
@@ -292,6 +335,14 @@ namespace projectSoftwareEngineering
                     enemy.Draw(_spriteBatch);
                 }
 
+                //Draw collectibles
+                foreach (var collectible in _collectibles)
+                {
+                    if (collectible is IGameObject gameObject)
+                    {
+                        gameObject.Draw(_spriteBatch);
+                    }
+                }
                 //Draw hero
                 _hero.Draw(_spriteBatch);
 
@@ -301,8 +352,7 @@ namespace projectSoftwareEngineering
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
                 _spriteBatch.Draw(
                     _renderTarget,
-                    new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
-                    Color.White
+                    new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),Color.White
                 );
 
                 DrawHealth();
@@ -316,6 +366,14 @@ namespace projectSoftwareEngineering
                     _deathScreen.Draw(_spriteBatch);
                 }
 
+                if (_currentState == GameState.LevelComplete)
+                {
+                    _spriteBatch.Draw(
+                        _debugTexture,
+                        new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), Color.Black * 0.7f
+                    );
+                    _levelCompleteScreen.Draw(_spriteBatch);
+                }
                 _spriteBatch.End();
             }
             
@@ -354,6 +412,7 @@ namespace projectSoftwareEngineering
             _collidables = _currentLevel.Collidables;
             _enemies = _currentLevel.Enemies;
             _spikes = _currentLevel.Spikes;
+            _collectibles = _currentLevel.Collectibles;
         }
     }
 }

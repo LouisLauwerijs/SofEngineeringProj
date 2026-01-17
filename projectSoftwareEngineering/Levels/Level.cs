@@ -26,12 +26,14 @@ namespace projectSoftwareEngineering.Levels
         protected Texture2D _wallTexture;
         protected Texture2D _enemyTexture;
         protected Texture2D _spikeTexture;
+        protected Texture2D _cointTexture;
 
         public Hero Hero { get; set; }
         public Camera Camera { get; set; }
         public List<ICollidable> Collidables { get; set; } = new List<ICollidable>();
         public List<Enemy> Enemies { get; set; } = new List<Enemy>();
         public List<Spike> Spikes { get; set; } = new List<Spike>();
+        public List<ICollectible> Collectibles { get; set; } = new List<ICollectible>();
 
         protected Level(LevelConfig config)
         {
@@ -45,6 +47,7 @@ namespace projectSoftwareEngineering.Levels
             _wallTexture = config.WallTexture;
             _enemyTexture = config.EnemyTexture;
             _spikeTexture = config.SpikeTexture;
+            _cointTexture = config.CoinTexture;
         }
 
         public void Load(CollisionManager collisionManager)
