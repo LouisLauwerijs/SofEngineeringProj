@@ -64,7 +64,7 @@ namespace projectSoftwareEngineering.Systems
                         // Land on floor 
                         physics.Position = new Vector2(
                             physics.Position.X,
-                            collidable.Bounds.Top - 32 - 18
+                            collidable.Bounds.Top - 48
                         );
                         physics.Velocity = new Vector2(physics.Velocity.X, 0);
                         physics.IsGrounded = true;
@@ -122,7 +122,7 @@ namespace projectSoftwareEngineering.Systems
                         {
                             physics.Position = new Vector2(
                                 physics.Position.X,
-                                collidable.Bounds.Top - 32 - 18
+                                collidable.Bounds.Top - 48
                             );
                             physics.Velocity = new Vector2(physics.Velocity.X, 0);
                             physics.IsGrounded = true;

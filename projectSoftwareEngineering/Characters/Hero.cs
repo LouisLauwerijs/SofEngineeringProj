@@ -21,6 +21,7 @@ namespace projectSoftwareEngineering.Characters
 
         private float _knockbackTimer = 0;
 
+        public bool isDead { get; set; } = false;
         public Health Health { get; set; }
         public Rectangle Bounds => new Rectangle(
             (int)_physics.Position.X+18,
@@ -51,6 +52,12 @@ namespace projectSoftwareEngineering.Characters
 
         public void Update(GameTime gameTime, List<ICollidable> collidables)
         {
+            if (isDead)
+            {
+                _animationController.Update(gameTime);
+                return;
+            }
+
             if (_knockbackTimer > 0)
             {
                 _knockbackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -95,7 +102,7 @@ namespace projectSoftwareEngineering.Characters
 
         private void HandleMovement()
         {
-            if (_knockbackTimer > 0)
+            if (isDead || _knockbackTimer > 0)
                 return;
 
             bool isMoving = false;
@@ -134,6 +141,9 @@ namespace projectSoftwareEngineering.Characters
 
         private void UpdateAnimation()
         {
+            if (isDead)
+                return;
+
             if (!_physics.IsGrounded)
             {
                 _animationController.JumpAnimation();
@@ -142,7 +152,11 @@ namespace projectSoftwareEngineering.Characters
 
         public void Die()
         {
-            
+            isDead = true;
+            _animationController.DieAnimation();
+            _physics.StopHorizontalMovement();
+            _physics.StopHorizontalMovement();
+            _physics.Velocity = Vector2.Zero;
         }
         public void ApplyKnockback(float direction)
         {

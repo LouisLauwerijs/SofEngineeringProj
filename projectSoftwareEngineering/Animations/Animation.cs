@@ -11,8 +11,11 @@ namespace projectSoftwareEngineering.Animations
     {
         public List<AnimationFrame> Frames { get; set; } = new List<AnimationFrame>();
         public double FrameInterval { get; set; } = 100;
+        public bool Loop { get; set; } = true;
+
         private double timer = 0;
         public int CurrentFrame { get; private set; } = 0;
+        public bool IsFinished { get; set; }
 
         public void AddFrame(AnimationFrame frame)
         {
@@ -26,17 +29,37 @@ namespace projectSoftwareEngineering.Animations
 
         public void Update(GameTime gameTime)
         {
+            if (IsFinished)
+                return;
+
             timer += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (timer >= FrameInterval)
             {
                 CurrentFrame++;
+
                 if (CurrentFrame >= Frames.Count)
-                    CurrentFrame = 0;
+                {
+                    if (Loop)
+                    {
+                        CurrentFrame = 0;
+                    }
+                    else
+                    {
+                        CurrentFrame = Frames.Count - 1;
+                        IsFinished = true;
+                    }
+                }
 
                 timer = 0;
             }
         }
-    }
 
+        public void Reset()
+        {
+            CurrentFrame = 0;
+            timer = 0;
+            IsFinished = false;
+        }
+    }
 }

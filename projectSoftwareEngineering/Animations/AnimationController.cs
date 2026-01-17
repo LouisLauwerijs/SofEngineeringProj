@@ -42,6 +42,14 @@ namespace projectSoftwareEngineering.Animations
             }
         }
 
+        public void DieAnimation()
+        {
+            if (currentAnimation != animations.Die)
+            {
+                currentAnimation = animations.Die;
+            }
+        }
+
         public Rectangle GetCurrentFrameRectangle()
         {
             return currentAnimation.GetCurrentFrameRectangle();

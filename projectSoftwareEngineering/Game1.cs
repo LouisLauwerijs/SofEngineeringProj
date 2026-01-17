@@ -20,6 +20,7 @@ namespace projectSoftwareEngineering
         Playing,
         Paused
     }
+    
 
     public class Game1 : Game
     {
@@ -271,12 +272,12 @@ namespace projectSoftwareEngineering
                 foreach (var enemy in _enemies)
                 {
                     enemy.Draw(_spriteBatch);
-                    DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
+                    //DrawRectangleOutline(_spriteBatch, enemy.Bounds, Color.Yellow, 1); // debug
                 }
 
                 //Draw hero
                 _hero.Draw(_spriteBatch);
-                DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
+                //DrawRectangleOutline(_spriteBatch, _hero.Bounds, Color.Red, 1); //------------------- debug
 
                 _spriteBatch.End();
 

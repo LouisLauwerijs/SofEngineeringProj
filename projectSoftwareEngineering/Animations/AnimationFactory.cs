@@ -15,7 +15,8 @@ namespace projectSoftwareEngineering.Animations
             {
                 Idle = BuildIdleAnimation(),
                 Run = BuildRunAnimation(),
-                Jump = BuildJumpAnimation()
+                Jump = BuildJumpAnimation(),
+                Die = BuildDeathAnimation()
             };
         }
 
@@ -54,6 +55,26 @@ namespace projectSoftwareEngineering.Animations
             animation.AddFrame(new AnimationFrame(new Rectangle(64, 256, 64, 64)));
             animation.AddFrame(new AnimationFrame(new Rectangle(128, 256, 64, 64)));
             animation.AddFrame(new AnimationFrame(new Rectangle(192, 256, 64, 64)));
+            return animation;
+        }
+        private static Animation BuildDeathAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(640, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(704, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(768, 448, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(832, 448, 64, 64)));
+            animation.Loop = false;
             return animation;
         }
     }
