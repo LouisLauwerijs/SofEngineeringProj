@@ -24,7 +24,9 @@ namespace projectSoftwareEngineering.Levels
         protected Texture2D _floorTexture;
         protected Texture2D _platformTexture;
         protected Texture2D _wallTexture;
-        protected Texture2D _enemyTexture;
+        protected Texture2D _runningEnemyTexture;
+        protected Texture2D _jumpingEnemyTexture;
+        protected Texture2D _shooterEnemyTexture;
         protected Texture2D _spikeTexture;
         protected Texture2D _cointTexture;
 
@@ -38,14 +40,16 @@ namespace projectSoftwareEngineering.Levels
         protected Level(LevelConfig config)
         {
             _graphicsDevice = config.GraphicsDevice;
-            _screenWidth = config.VirtualWidth;
-            _screenHeight = config.VirtualHeight;
+            _screenWidth = config.RenderWidth;
+            _screenHeight = config.RenderHeight;
 
             _heroTexture = config.HeroTexture;
             _floorTexture = config.FloorTexture;
             _platformTexture = config.PlatformTexture;
             _wallTexture = config.WallTexture;
-            _enemyTexture = config.EnemyTexture;
+            _runningEnemyTexture = config.RunningEnemyTexture;
+            _jumpingEnemyTexture = config.JumpingEnemyTexture;
+            _shooterEnemyTexture = config.ShooterEnemyTexture;
             _spikeTexture = config.SpikeTexture;
             _cointTexture = config.CoinTexture;
         }

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using projectSoftwareEngineering.Characters;
 using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
 using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;
@@ -54,9 +55,12 @@ namespace projectSoftwareEngineering
         //enemies and spikes
         private List<Enemy> _enemies;
         private List<Spike> _spikes;
-        private Texture2D _walkingEnemyTexture;
         private Texture2D _spikeTexture;
+        private Texture2D _walkingEnemyTexture;
         private Texture2D _jumpingEnemyTexture;
+        private Texture2D _shooterEnemyTexture;
+
+        private ProjectileManager _projectileManager;
 
         //menu
         private GameState _currentState = GameState.MainMenu;
@@ -104,6 +108,8 @@ namespace projectSoftwareEngineering
             _enemies = new List<Enemy>();
             _spikes = new List<Spike>();
             _collectibles = new List<ICollectible>();
+
+            _projectileManager = new ProjectileManager();
             base.Initialize();
         }
 
@@ -134,6 +140,7 @@ namespace projectSoftwareEngineering
             _wallTexture = CreateColoredTexture(Color.Orange);
             _walkingEnemyTexture = CreateColoredTexture(Color.Red);
             _jumpingEnemyTexture = CreateColoredTexture(Color.Purple);
+            _shooterEnemyTexture = CreateColoredTexture(Color.Blue);
             _spikeTexture = CreateColoredTexture(Color.DarkRed);
 
             LevelConfig levelConfig = new LevelConfig(
@@ -145,6 +152,8 @@ namespace projectSoftwareEngineering
                     _platformTexture,
                     _wallTexture,
                     _walkingEnemyTexture,
+                    _jumpingEnemyTexture,
+                    _shooterEnemyTexture,
                     _spikeTexture,
                     _coinTexture
                 );
@@ -212,12 +221,23 @@ namespace projectSoftwareEngineering
                         }
                     }
 
+                    if (enemy is ShooterEnemy shooterEnemy)
+                    {
+                        _projectileManager.HandleProjectileCollisions(
+                            shooterEnemy.GetProjectiles(),
+                            _hero,
+                            _collidables
+                        );
+                    }
+
                     if (enemy.Health.CurrentHealth <= 0)
                     {
                         enemy.Die();
                         _enemies.Remove(enemy);
                     }
                 }
+
+
 
                 foreach (Spike spike in _spikes)
                 {

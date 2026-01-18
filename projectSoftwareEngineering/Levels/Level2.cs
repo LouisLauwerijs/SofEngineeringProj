@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
 using projectSoftwareEngineering.Environment;
 using System;
 using System.Collections.Generic;
@@ -39,14 +40,17 @@ namespace projectSoftwareEngineering.Levels
             Collidables.Add(leftWall);
 
             // Multiple enemies
-            WalkingEnemy enemy1 = new WalkingEnemy(_enemyTexture, new Vector2(200, 100), 1);
+            WalkingEnemy enemy1 = new WalkingEnemy(_runningEnemyTexture, new Vector2(200, 100), 1);
             Enemies.Add(enemy1);
 
-            WalkingEnemy enemy2 = new WalkingEnemy(_enemyTexture, new Vector2(450, 80), 1);
+            WalkingEnemy enemy2 = new WalkingEnemy(_runningEnemyTexture, new Vector2(450, 80), 1);
             Enemies.Add(enemy2);
 
-            JumpingEnemy jumpingEnemy = new JumpingEnemy(_enemyTexture, new Vector2(350, 100), 1);
+            JumpingEnemy jumpingEnemy = new JumpingEnemy(_jumpingEnemyTexture, new Vector2(350, 100), 1);
             Enemies.Add(jumpingEnemy);
+
+            ShooterEnemy shooterEnemy = new ShooterEnemy(_shooterEnemyTexture, new Vector2(450, 100), Hero, 1);
+            Enemies.Add(shooterEnemy);
 
             Spike spike1 = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
             Spikes.Add(spike1);

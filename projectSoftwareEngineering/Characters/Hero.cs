@@ -9,7 +9,7 @@ using projectSoftwareEngineering.Systems;
 
 namespace projectSoftwareEngineering.Characters
 {
-    public class Hero : IGameObject, ICollidable, IDamageable
+    public class Hero : IGameObject, ICollidable, IDamageable, ITargetable
     {
         private Texture2D _texture;
         private IInputChecker _inputHandler;

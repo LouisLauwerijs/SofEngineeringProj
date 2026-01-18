@@ -10,36 +10,42 @@ namespace projectSoftwareEngineering.Levels
     public class LevelConfig
     {
         public GraphicsDevice GraphicsDevice { get; }
-        public int VirtualWidth { get; }
-        public int VirtualHeight { get; }
+        public int RenderWidth { get; }
+        public int RenderHeight { get; }
         public Texture2D HeroTexture { get; }
         public Texture2D FloorTexture { get; }
         public Texture2D PlatformTexture { get; }
         public Texture2D WallTexture { get; }
-        public Texture2D EnemyTexture { get; }
+        public Texture2D RunningEnemyTexture { get; }
+        public Texture2D JumpingEnemyTexture { get; }
+        public Texture2D ShooterEnemyTexture { get; }
         public Texture2D SpikeTexture { get; }
         public Texture2D CoinTexture { get; }
 
         public LevelConfig(
             GraphicsDevice graphicsDevice,
-            int virtualWidth,
-            int virtualHeight,
+            int renderWidht,
+            int renderHeight,
             Texture2D heroTexture,
             Texture2D floorTexture,
             Texture2D platformTexture,
             Texture2D wallTexture,
-            Texture2D enemyTexture,
+            Texture2D walkingEnemyTexture,
+            Texture2D jumpingEnemyTexture,
+            Texture2D shooterEnemyTexture,
             Texture2D spikeTexture,
             Texture2D coinTexture)
         {
             GraphicsDevice = graphicsDevice;
-            VirtualWidth = virtualWidth;
-            VirtualHeight = virtualHeight;
+            RenderWidth = renderWidht;
+            RenderHeight = renderHeight;
             HeroTexture = heroTexture;
             FloorTexture = floorTexture;
             PlatformTexture = platformTexture;
             WallTexture = wallTexture;
-            EnemyTexture = enemyTexture;
+            RunningEnemyTexture = walkingEnemyTexture;
+            JumpingEnemyTexture = jumpingEnemyTexture;
+            ShooterEnemyTexture = shooterEnemyTexture;
             SpikeTexture = spikeTexture;
             CoinTexture = coinTexture;
         }

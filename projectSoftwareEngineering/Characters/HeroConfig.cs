@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace projectSoftwareEngineering.Characters
 {
-    internal class HeroConfig : ICharacterConfig
+    public class HeroConfig : ICharacterConfig
     {
         public Vector2 StartPosition => new Vector2(50, 50);
         public float Gravity => 0.4f;
