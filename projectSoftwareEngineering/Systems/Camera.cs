@@ -13,6 +13,7 @@ namespace projectSoftwareEngineering.Systems
         private int _visibility;
 
         public Matrix Transform { get; private set; }
+        public Vector2 Position => new Vector2(_position, 0);
 
         public Camera(int visibility)
         {

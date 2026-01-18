@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Background;
 using projectSoftwareEngineering.Characters;
 using projectSoftwareEngineering.Characters.Enemies;
 using projectSoftwareEngineering.Characters.Hero;

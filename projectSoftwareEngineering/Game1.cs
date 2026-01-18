@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using projectSoftwareEngineering.Background;
 using projectSoftwareEngineering.Characters.Enemies;
 using projectSoftwareEngineering.Characters.Enemies.JumpingEnemy;
 using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
@@ -83,6 +84,9 @@ namespace projectSoftwareEngineering
         private int _currentLevelNr;
         private const int MAX_LEVEL = 2;
 
+        //Background
+        private BackgroundManager _backgroundManager;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -113,7 +117,24 @@ namespace projectSoftwareEngineering
 
         protected override void LoadContent()
         {
-            _debugTexture = CreateColoredTexture(Color.White); //-------------- debug
+            //Backgrounds
+            _backgroundManager = new BackgroundManager(RENDER_WIDTH, RENDER_HEIGHT);
+
+            Texture2D bg1 = Content.Load<Texture2D>("bg1");
+            Texture2D bg2 = Content.Load<Texture2D>("bg2");
+            Texture2D bg3 = Content.Load<Texture2D>("bg3");
+            Texture2D bg4 = Content.Load<Texture2D>("bg4");
+            Texture2D bg5 = Content.Load<Texture2D>("bg5");
+            Texture2D bg6 = Content.Load<Texture2D>("bg6");
+
+            _backgroundManager.AddLayer(bg1, 0.1f);  
+            _backgroundManager.AddLayer(bg2, 0.2f);
+            _backgroundManager.AddLayer(bg3, 0.3f);
+            _backgroundManager.AddLayer(bg4, 0.4f);
+            _backgroundManager.AddLayer(bg5, 0.5f);
+            _backgroundManager.AddLayer(bg6, 0.6f);
+
+
 
             _renderTarget = new RenderTarget2D(GraphicsDevice, RENDER_WIDTH, RENDER_HEIGHT);
 
@@ -355,10 +376,17 @@ namespace projectSoftwareEngineering
                 GraphicsDevice.SetRenderTarget(_renderTarget);
                 GraphicsDevice.Clear(Color.Gray);
 
+                //Draw Background
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _backgroundManager.Draw(_spriteBatch, _camera.Position);
+                _spriteBatch.End();
+
                 _spriteBatch.Begin(
                     samplerState: SamplerState.PointClamp,
                     transformMatrix: _camera.Transform
                 );
+
+                
 
                 //Draw platforms and floors
                 foreach (var collidable in _collidables)
@@ -373,6 +401,7 @@ namespace projectSoftwareEngineering
                 foreach (var enemy in _enemies)
                 {
                     enemy.Draw(_spriteBatch);
+                    
                 }
 
                 //Draw collectibles
