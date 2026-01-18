@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Characters.Enemies.JumpingEnemy;
 using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
+using projectSoftwareEngineering.Characters.Enemies.WalkingEnemy;
 using projectSoftwareEngineering.Characters.Hero;
 using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
@@ -56,10 +58,6 @@ namespace projectSoftwareEngineering
         private List<Enemy> _enemies;
         private List<Spike> _spikes;
         private Texture2D _spikeTexture;
-        private Texture2D _walkingEnemyTexture;
-        private Texture2D _jumpingEnemyTexture;
-        private Texture2D _shooterEnemyTexture;
-
         private ProjectileManager _projectileManager;
 
         //menu
@@ -119,13 +117,33 @@ namespace projectSoftwareEngineering
 
             _renderTarget = new RenderTarget2D(GraphicsDevice, RENDER_WIDTH, RENDER_HEIGHT);
 
+            //Hero
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _heroTexture = Content.Load<Texture2D>("characterSpritesheet");
+
+            //Environment
             _floorTexture = Content.Load<Texture2D>("floorSprite");
             _coinTexture = Content.Load<Texture2D>("MonedaP");
+            _platformTexture = Content.Load<Texture2D>("platform");
+            _wallTexture = Content.Load<Texture2D>("wall");
+            _spikeTexture = Content.Load<Texture2D>("Spike");
 
+            //Fonts
             _titleFont = Content.Load<SpriteFont>("TitleFont");
             _buttonFont = Content.Load<SpriteFont>("ButtonFont");
+
+            //Enemies
+            Texture2D _walkingEnemyWalkTexture = Content.Load<Texture2D>("walkerWalk");
+            Texture2D _walkingEnemyDieTexture = Content.Load<Texture2D>("WalkerDie");
+
+            Texture2D _jumpingEnemyJumpTexture = Content.Load<Texture2D>("Jumper");
+            Texture2D _jumpingEnemyDieTexture = Content.Load<Texture2D>("jumperdie");
+            Texture2D _jumpingEnemyIdleTexture = Content.Load<Texture2D>("JumperIdle");
+
+            Texture2D _shooterEnemyIdleTexture = Content.Load<Texture2D>("shooterIdle");
+            Texture2D _shooterEnemyAttackTexture = Content.Load<Texture2D>("shooterAtt");
+            Texture2D _shooterEnemyDieTexture = Content.Load<Texture2D>("shooterDie");
+
 
             Texture2D buttonTexture = CreateColoredTexture(Color.DarkGray);
 
@@ -136,12 +154,6 @@ namespace projectSoftwareEngineering
             _deathScreen = new DeathScreen(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
             _levelCompleteScreen = new LevelCompleteScreen(buttonTexture, _titleFont, _buttonFont, screenWidth, screenHeight);
 
-            _platformTexture = CreateColoredTexture(Color.Brown);
-            _wallTexture = CreateColoredTexture(Color.Orange);
-            _walkingEnemyTexture = CreateColoredTexture(Color.Red);
-            _jumpingEnemyTexture = CreateColoredTexture(Color.Purple);
-            _shooterEnemyTexture = CreateColoredTexture(Color.Blue);
-            _spikeTexture = CreateColoredTexture(Color.DarkRed);
 
             LevelConfig levelConfig = new LevelConfig(
                     GraphicsDevice,
@@ -151,9 +163,14 @@ namespace projectSoftwareEngineering
                     _floorTexture,
                     _platformTexture,
                     _wallTexture,
-                    _walkingEnemyTexture,
-                    _jumpingEnemyTexture,
-                    _shooterEnemyTexture,
+                    _walkingEnemyWalkTexture,
+                    _walkingEnemyDieTexture,
+                    _jumpingEnemyJumpTexture,
+                    _jumpingEnemyDieTexture,
+                    _jumpingEnemyIdleTexture,
+                    _shooterEnemyIdleTexture,
+                    _shooterEnemyAttackTexture,
+                    _shooterEnemyDieTexture,
                     _spikeTexture,
                     _coinTexture
                 );
@@ -196,13 +213,6 @@ namespace projectSoftwareEngineering
                     }
                 }
 
-                foreach (var collidable in _collidables)
-                {
-                    if (collidable is IGameObject gameObject)
-                    {
-                        gameObject.Update(gameTime);
-                    }
-                }
                 foreach (var collectible in _collectibles)
                 {
                     if (collectible is IGameObject gameObject)
@@ -241,9 +251,8 @@ namespace projectSoftwareEngineering
                         );
                     }
 
-                    if (enemy.Health.CurrentHealth <= 0)
+                    if (enemy.ReadyToRemove)
                     {
-                        enemy.Die();
                         _enemies.Remove(enemy);
                     }
                 }
@@ -376,7 +385,6 @@ namespace projectSoftwareEngineering
                 }
                 //Draw hero
                 _hero.Draw(_spriteBatch);
-                _hero.DrawDebug(_spriteBatch, _debugTexture);
 
                 _spriteBatch.End();
 

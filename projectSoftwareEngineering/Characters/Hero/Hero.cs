@@ -181,15 +181,5 @@ namespace projectSoftwareEngineering.Characters.Hero
             Console.WriteLine($"Knockback applied! Timer: {_knockbackTimer}");
             _physics.Position += new Vector2(direction * 15, 0);
         }
-
-        public void DrawDebug(SpriteBatch spriteBatch, Texture2D debugTexture)
-        {
-            // Draw attack hitbox in red when active
-            if (_meleeAttack.IsActive)
-            {
-                Rectangle hitbox = _meleeAttack.Hitbox;
-                spriteBatch.Draw(debugTexture, hitbox, Color.Red * 0.5f);
-            }
-        }
     }
 }

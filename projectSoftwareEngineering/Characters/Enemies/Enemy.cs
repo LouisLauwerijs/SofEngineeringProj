@@ -1,21 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Animations;
 using projectSoftwareEngineering.Interfaces;
 using projectSoftwareEngineering.Systems;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace projectSoftwareEngineering.Characters.Enemies
 {
     public abstract class Enemy : IGameObject, ICollidable, IDamageable
     {
-        public Texture2D _texture;
+        protected Dictionary<string, Texture2D> _textures;
+        protected bool _isDying = false;
+        protected float _deathTimer = 0f;
+        protected const float DEATH_DURATION = 1.0f;
+        public bool ReadyToRemove { get; protected set; } = false;
+
         public Physics _physics;       
         public bool _facingRight;
-
-        //For different size enemies
+        protected AnimationController _animationController;
+        protected SpriteEffects _direction = SpriteEffects.None;
         public abstract int Width { get; }
         public abstract int Height { get; }
-        public Rectangle Bounds => new Rectangle(
+        public virtual Rectangle Bounds => new Rectangle(
             (int)_physics.Position.X + 18,
             (int)_physics.Position.Y + 18,
             28, 30
@@ -24,9 +31,9 @@ namespace projectSoftwareEngineering.Characters.Enemies
         public Health Health { get; set; }
         public bool IsSolid => false;
 
-        public Enemy(Texture2D texture, ICharacterConfig config, int health)
+        public Enemy(Dictionary<string, Texture2D> textures, ICharacterConfig config, int health, AnimationSet animationSet)
         {
-            _texture = texture;
+            _textures = textures;
             _facingRight = true;
 
             _physics = new Physics(
@@ -37,10 +44,20 @@ namespace projectSoftwareEngineering.Characters.Enemies
             );
 
             Health = new Health(health);
+            _animationController = new AnimationController(animationSet);
+        }
+        protected abstract string GetCurrentTextureKey();
+        protected Texture2D GetCurrentTexture()
+        {
+            string key = GetCurrentTextureKey();
+            if (_textures.ContainsKey(key))
+            {
+                return _textures[key];
+            }
+            return _textures.Values.First();
         }
         public virtual void Die()
         {
-            //TODO death animation
         }
 
         public abstract void Draw(SpriteBatch spriteBatch);

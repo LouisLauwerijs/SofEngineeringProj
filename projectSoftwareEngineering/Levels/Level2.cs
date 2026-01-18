@@ -40,29 +40,52 @@ namespace projectSoftwareEngineering.Levels
             Floor leftWall = new Floor(_wallTexture, -155, 0, 160, _screenHeight);
             Collidables.Add(leftWall);
 
-            // Multiple enemies
-            WalkingEnemy enemy1 = new WalkingEnemy(_runningEnemyTexture, new Vector2(200, 100), 1);
-            Enemies.Add(enemy1);
+            //// Multiple enemies
+            //WalkingEnemy enemy1 = new WalkingEnemy(
+            //    _walkingEnemyWalkTexture,
+            //    _walkingEnemyDieTexture,
+            //    new Vector2(200, 100),
+            //    1
+            //);
+            //Enemies.Add(enemy1);
 
-            WalkingEnemy enemy2 = new WalkingEnemy(_runningEnemyTexture, new Vector2(450, 80), 1);
-            Enemies.Add(enemy2);
+            //WalkingEnemy enemy2 = new WalkingEnemy(
+            //    _walkingEnemyWalkTexture,
+            //    _walkingEnemyDieTexture,
+            //    new Vector2(450, 80),
+            //    1
+            //);
+            //Enemies.Add(enemy2);
 
-            JumpingEnemy jumpingEnemy = new JumpingEnemy(_jumpingEnemyTexture, new Vector2(350, 100), 1);
-            Enemies.Add(jumpingEnemy);
+            //JumpingEnemy enemy3 = new JumpingEnemy(
+            //    _jumpingEnemyJumpTexture,
+            //    _jumpingEnemyDieTexture,
+            //    _jumpingEnemyIdleTexture,
+            //    new Vector2(200, 100),
+            //    1
+            //);
+            //Enemies.Add(enemy3);
 
-            ShooterEnemy shooterEnemy = new ShooterEnemy(_shooterEnemyTexture, new Vector2(450, 100), Hero, 1);
+            ShooterEnemy shooterEnemy = new ShooterEnemy(
+                _shooterEnemyIdleTexture,
+                _shooterEnemyAttackTexture,
+                _shooterEnemyDieTexture,
+                new Vector2(450, 100),
+                Hero,
+                1
+            );
             Enemies.Add(shooterEnemy);
 
-            Spike spike1 = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
-            Spikes.Add(spike1);
-            Collidables.Add(spike1);
+            //Spike spike1 = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
+            //Spikes.Add(spike1);
+            //Collidables.Add(spike1);
 
-            Spike spike2 = new Spike(_spikeTexture, 320, _screenHeight - 35, 20, 20);
-            Spikes.Add(spike2);
-            Collidables.Add(spike2);
+            //Spike spike2 = new Spike(_spikeTexture, 320, _screenHeight - 35, 20, 20);
+            //Spikes.Add(spike2);
+            //Collidables.Add(spike2);
 
             //Completion coin
-            Coin coin = new Coin(_cointTexture, (_screenWidth - 500), (_screenHeight - 50), 25, 25);
+            Coin coin = new Coin(_cointTexture, 1000, (_screenHeight - 50), 25, 25);
             Collectibles.Add(coin);
         }
     }

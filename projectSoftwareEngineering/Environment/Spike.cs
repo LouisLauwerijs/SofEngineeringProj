@@ -13,7 +13,7 @@ namespace projectSoftwareEngineering.Environment
     {
         private Texture2D _texture;
         public Rectangle Bounds { get; set; }
-        public bool IsSolid => false;
+        public bool IsSolid => true;
 
         public Spike(Texture2D texture, int x, int y, int width, int height)
         {
@@ -24,7 +24,7 @@ namespace projectSoftwareEngineering.Environment
         public void Update(GameTime gameTime) { }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Bounds, Color.DarkRed);
+            spriteBatch.Draw(_texture, Bounds, Color.White);
         }
     }
 }

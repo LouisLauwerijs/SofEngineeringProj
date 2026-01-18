@@ -17,7 +17,34 @@ namespace projectSoftwareEngineering.Animations
                 Run = BuildRunAnimation(),
                 Jump = BuildJumpAnimation(),
                 Die = BuildDeathAnimation(),
-                Attack = BuildAttackAnimation()                
+                Attack = BuildAttackAnimation()
+            };
+        }
+
+        public static AnimationSet CreateWalkingEnemyAnimations()
+        {
+            return new AnimationSet
+            {
+                WalkerEnemyWalk = BuildWalkerEnemyWalkAnimation(),
+                WalkerEnemyDie = BuildsWalkerEnemyDieAnimation()
+            };
+        }
+        public static AnimationSet CreateJumpingEnemyAnimations()
+        {
+            return new AnimationSet
+            {
+                JumperJump = BuildJumperEnemyJumpAnimation(),
+                JumperDie = BuildJumperDieAnimation(),
+                JumperIdle = BuildJumperEnemyIdleAnimation()
+            };
+        }
+        public static AnimationSet CreateShooterEnemyAnimations()
+        {
+            return new AnimationSet
+            {
+                ShooterIdle = BuildShooterIdleAnimation(),
+                ShooterAttack = BuildShooterAttackAnimation(),
+                ShooterDie = BuildShooterDieAnimation()
             };
         }
 
@@ -89,5 +116,139 @@ namespace projectSoftwareEngineering.Animations
             return animation;
         }
 
+        //Enemies
+        private static Animation BuildShooterDieAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(640, 0, 64, 64)));
+            animation.Loop = false;
+            return animation;
+        }
+
+        private static Animation BuildShooterAttackAnimation()
+        {
+            Animation animation = new Animation();
+            //animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(640, 0, 64, 64)));
+            animation.Loop = false;
+            return animation;
+        }
+
+        private static Animation BuildShooterIdleAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+            return animation;
+        }
+
+        private static Animation BuildJumperDieAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(640, 0, 64, 64)));
+            animation.Loop = false;
+            return animation;
+        }
+
+        private static Animation BuildJumperEnemyJumpAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+            animation.Loop = false;
+            return animation;
+        }
+        private static Animation BuildJumperEnemyIdleAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
+            animation.Loop = true;
+            return animation;
+        }
+
+        private static Animation BuildsWalkerEnemyDieAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(96, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(288, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(480, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(672, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(768, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(864, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(960, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(1056, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(1152, 0, 96, 64)));
+            animation.Loop = false;
+            return animation;
+        }
+
+        private static Animation BuildWalkerEnemyWalkAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(96, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(192, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(288, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(384, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(480, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(576, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(672, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(768, 0, 96, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(864, 0, 96, 64)));
+            animation.Loop = true;
+            return animation;
+        }
     }
 }

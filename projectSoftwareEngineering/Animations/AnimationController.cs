@@ -15,45 +15,62 @@ namespace projectSoftwareEngineering.Animations
         public AnimationController(AnimationSet Animations)
         {
             animations = Animations;
-            currentAnimation = animations.Idle;
+            currentAnimation = animations.GetFirstAvailableAnimation();
         }
 
         public void IdleAnimation()
         {
-            if (currentAnimation != animations.Idle)
+            Animation targetAnimation = animations.Idle ?? animations.ShooterIdle ?? animations.JumperIdle;
+
+            if (targetAnimation != null && currentAnimation != targetAnimation)
             {
-                currentAnimation = animations.Idle;
+                currentAnimation = targetAnimation;
+                currentAnimation.Reset();
             }
         }
 
         public void RunAnimation()
         {
-            if (currentAnimation != animations.Run)
+            Animation targetAnimation = animations.Run ?? animations.WalkerEnemyWalk;
+
+            if (targetAnimation != null && currentAnimation != targetAnimation)
             {
-                currentAnimation = animations.Run;
+                currentAnimation = targetAnimation;
+                currentAnimation.Reset();
             }
         }
 
         public void JumpAnimation()
         {
-            if (currentAnimation != animations.Jump)
+            Animation targetAnimation = animations.Jump ?? animations.JumperJump;
+
+            if (targetAnimation != null && currentAnimation != targetAnimation)
             {
-                currentAnimation = animations.Jump;
+                currentAnimation = targetAnimation;
+                currentAnimation.Reset();
             }
         }
 
         public void DieAnimation()
         {
-            if (currentAnimation != animations.Die)
+            Animation targetAnimation = animations.Die
+                ?? animations.WalkerEnemyDie
+                ?? animations.JumperDie
+                ?? animations.ShooterDie;
+
+            if (targetAnimation != null && currentAnimation != targetAnimation)
             {
-                currentAnimation = animations.Die;
+                currentAnimation = targetAnimation;
+                currentAnimation.Reset();
             }
         }
         public void AttackAnimation()
         {
-            if (currentAnimation != animations.Attack)
+            Animation targetAnimation = animations.Attack ?? animations.ShooterAttack;
+
+            if (targetAnimation != null && currentAnimation != targetAnimation)
             {
-                currentAnimation = animations.Attack;
+                currentAnimation = targetAnimation;
                 currentAnimation.Reset();
             }
         }

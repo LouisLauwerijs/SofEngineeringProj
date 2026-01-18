@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Animations;
 using projectSoftwareEngineering.Interfaces;
 using projectSoftwareEngineering.Systems;
 using System;
@@ -10,29 +11,72 @@ namespace projectSoftwareEngineering.Characters.Enemies.WalkingEnemy
     public class WalkingEnemy: Enemy
     {
         public override int Width => 30;
-
         public override int Height => 30;
 
         private int _edgeDistance= 4;
+        private bool _isDying = false;
 
-        public WalkingEnemy(Texture2D texture, Vector2 startPosition, int health = 1)
-            :base(texture, new WalkingEnemyConfig(startPosition), health) 
+        public WalkingEnemy(Dictionary<string, Texture2D> textures, Vector2 startPosition, int health = 1)
+            : base(textures, new WalkingEnemyConfig(startPosition), health, AnimationFactory.CreateWalkingEnemyAnimations())
+        {
+        }
+        public WalkingEnemy(Texture2D walkTexture, Texture2D dieTexture, Vector2 startPosition, int health = 1)
+            : this(new Dictionary<string, Texture2D>
+            {
+                { "walk", walkTexture },
+                { "die", dieTexture }
+            }, startPosition, health)
         { 
         }
-
+        protected override string GetCurrentTextureKey()
+        {
+            if (_isDying || Health.CurrentHealth <= 0)
+            {
+                return "die";
+            }
+            return "walk";
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (Health.CurrentHealth <= 0) return;
+            _direction = _facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            Vector2 drawPosition = new Vector2(
+                _physics.Position.X,  
+                _physics.Position.Y - 16
+            );
 
-            spriteBatch.Draw(_texture, Bounds, Color.Red);
+            spriteBatch.Draw(
+                GetCurrentTexture(),
+                drawPosition,
+                _animationController.GetCurrentFrameRectangle(),
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                _direction,
+                0f
+            );
         }
 
-        
+
 
         public override void Update(GameTime gametime, List<ICollidable> collidables, CollisionManager collisionManager)
         {
             if (Health.CurrentHealth <= 0)
             {
+                if (!_isDying)
+                {
+                    _isDying = true;
+                    _animationController.DieAnimation();
+                }
+
+                _deathTimer += (float)gametime.ElapsedGameTime.TotalSeconds;
+
+                if (_deathTimer >= DEATH_DURATION)
+                {
+                    ReadyToRemove = true;
+                }
+
+                _animationController.Update(gametime);
                 return;
             }
 
@@ -43,7 +87,6 @@ namespace projectSoftwareEngineering.Characters.Enemies.WalkingEnemy
             collisionManager.SolidCollisionCheck(_physics, collidables);
             collisionManager.PlatformCollisionCheck(_physics, collidables);
 
-            //CheckGround
             if (_physics.Velocity.Y >= 0)
             {
                 _physics.IsGrounded = collisionManager.IsStandingOnGroud(Bounds, collidables);
@@ -52,8 +95,16 @@ namespace projectSoftwareEngineering.Characters.Enemies.WalkingEnemy
             if (_physics.IsGrounded)
             {
                 Patrol(collidables, collisionManager);
+                if (_animationController != null)
+                {
+                    _animationController.RunAnimation();
+                }
             }
 
+            if(_animationController != null)
+            {
+                _animationController.Update(gametime);
+            }
             Health.VulnerableUpdate(gametime);
         }
         private void Patrol(List<ICollidable> collidables, CollisionManager collisionManager)
@@ -120,6 +171,17 @@ namespace projectSoftwareEngineering.Characters.Enemies.WalkingEnemy
 
             return true;
         }
+        public override void Die()
+        {
+            _isDying = true;
+            _animationController.DieAnimation();
+        }
+        public override Rectangle Bounds => new Rectangle(
+            (int)_physics.Position.X + 34,
+            (int)_physics.Position.Y,
+            32, 50
+        );
+
         public override void Update(GameTime gametime)
         {
         }

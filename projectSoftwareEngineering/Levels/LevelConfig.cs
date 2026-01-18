@@ -16,36 +16,53 @@ namespace projectSoftwareEngineering.Levels
         public Texture2D FloorTexture { get; }
         public Texture2D PlatformTexture { get; }
         public Texture2D WallTexture { get; }
-        public Texture2D RunningEnemyTexture { get; }
-        public Texture2D JumpingEnemyTexture { get; }
-        public Texture2D ShooterEnemyTexture { get; }
+
+        public Texture2D WalkingEnemyWalkTexture { get; }
+        public Texture2D WalkingEnemyDieTexture { get; }
+        public Texture2D JumpingEnemyJumpTexture { get; }
+        public Texture2D JumpingEnemyDieTexture { get; }
+        public Texture2D JumpingEnemyIdleTexture { get; }
+        public Texture2D ShooterEnemyIdleTexture { get; }
+        public Texture2D ShooterEnemyAttackTexture { get; }
+        public Texture2D ShooterEnemyDieTexture { get; }
+
         public Texture2D SpikeTexture { get; }
         public Texture2D CoinTexture { get; }
 
         public LevelConfig(
             GraphicsDevice graphicsDevice,
-            int renderWidht,
+            int renderWidth,
             int renderHeight,
             Texture2D heroTexture,
             Texture2D floorTexture,
             Texture2D platformTexture,
             Texture2D wallTexture,
-            Texture2D walkingEnemyTexture,
-            Texture2D jumpingEnemyTexture,
-            Texture2D shooterEnemyTexture,
+            Texture2D walkingEnemyWalkTexture,
+            Texture2D walkingEnemyDieTexture,
+            Texture2D jumpingEnemyJumpTexture,
+            Texture2D jumpingEnemyDieTexture,
+            Texture2D jumpingEnemyIdleTexture,
+            Texture2D shooterEnemyIdleTexture,
+            Texture2D shooterEnemyAttackTexture,
+            Texture2D shooterEnemyDieTexture,
             Texture2D spikeTexture,
             Texture2D coinTexture)
         {
             GraphicsDevice = graphicsDevice;
-            RenderWidth = renderWidht;
+            RenderWidth = renderWidth;
             RenderHeight = renderHeight;
             HeroTexture = heroTexture;
             FloorTexture = floorTexture;
             PlatformTexture = platformTexture;
             WallTexture = wallTexture;
-            RunningEnemyTexture = walkingEnemyTexture;
-            JumpingEnemyTexture = jumpingEnemyTexture;
-            ShooterEnemyTexture = shooterEnemyTexture;
+            WalkingEnemyWalkTexture = walkingEnemyWalkTexture;
+            WalkingEnemyDieTexture = walkingEnemyDieTexture;
+            JumpingEnemyJumpTexture = jumpingEnemyJumpTexture;
+            JumpingEnemyDieTexture = jumpingEnemyDieTexture;
+            JumpingEnemyIdleTexture = jumpingEnemyIdleTexture;
+            ShooterEnemyIdleTexture = shooterEnemyIdleTexture;
+            ShooterEnemyAttackTexture = shooterEnemyAttackTexture;
+            ShooterEnemyDieTexture = shooterEnemyDieTexture;
             SpikeTexture = spikeTexture;
             CoinTexture = coinTexture;
         }

@@ -25,9 +25,14 @@ namespace projectSoftwareEngineering.Levels
         protected Texture2D _floorTexture;
         protected Texture2D _platformTexture;
         protected Texture2D _wallTexture;
-        protected Texture2D _runningEnemyTexture;
-        protected Texture2D _jumpingEnemyTexture;
-        protected Texture2D _shooterEnemyTexture;
+        protected Texture2D _walkingEnemyWalkTexture;
+        protected Texture2D _walkingEnemyDieTexture;
+        protected Texture2D _jumpingEnemyJumpTexture;
+        protected Texture2D _jumpingEnemyDieTexture;
+        protected Texture2D _jumpingEnemyIdleTexture;
+        protected Texture2D _shooterEnemyIdleTexture;
+        protected Texture2D _shooterEnemyAttackTexture;
+        protected Texture2D _shooterEnemyDieTexture;
         protected Texture2D _spikeTexture;
         protected Texture2D _cointTexture;
 
@@ -48,9 +53,14 @@ namespace projectSoftwareEngineering.Levels
             _floorTexture = config.FloorTexture;
             _platformTexture = config.PlatformTexture;
             _wallTexture = config.WallTexture;
-            _runningEnemyTexture = config.RunningEnemyTexture;
-            _jumpingEnemyTexture = config.JumpingEnemyTexture;
-            _shooterEnemyTexture = config.ShooterEnemyTexture;
+            _walkingEnemyWalkTexture = config.WalkingEnemyWalkTexture;
+            _walkingEnemyDieTexture = config.WalkingEnemyDieTexture;
+            _jumpingEnemyJumpTexture = config.JumpingEnemyJumpTexture;
+            _jumpingEnemyDieTexture = config.JumpingEnemyDieTexture;
+            _jumpingEnemyIdleTexture = config.JumpingEnemyIdleTexture;
+            _shooterEnemyIdleTexture = config.ShooterEnemyIdleTexture;
+            _shooterEnemyAttackTexture = config.ShooterEnemyAttackTexture;
+            _shooterEnemyDieTexture = config.ShooterEnemyDieTexture;
             _spikeTexture = config.SpikeTexture;
             _cointTexture = config.CoinTexture;
         }
@@ -68,13 +78,5 @@ namespace projectSoftwareEngineering.Levels
         }
 
         public abstract void BuildLevel();
-
-        //Temp until sprites
-        protected Texture2D CreateColoredTexture(Color color)
-        {
-            Texture2D texture = new Texture2D(_graphicsDevice, 1, 1);
-            texture.SetData(new[] { color });
-            return texture;
-        }
     }
 }

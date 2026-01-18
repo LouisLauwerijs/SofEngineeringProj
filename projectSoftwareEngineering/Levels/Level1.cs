@@ -36,7 +36,12 @@ namespace projectSoftwareEngineering.Levels
             Collidables.Add(leftWall);
 
             // Enemy with platform
-            WalkingEnemy enemy1 = new WalkingEnemy(_runningEnemyTexture, new Vector2(300, 100), 1);
+            WalkingEnemy enemy1 = new WalkingEnemy(
+                _walkingEnemyWalkTexture,  
+                _walkingEnemyDieTexture,  
+                new Vector2(300, 100),     
+                1
+            );
             Enemies.Add(enemy1);
             Platform enemyPlatform = new Platform(_platformTexture, 300, 200, 80, 15);
             Collidables.Add(enemyPlatform);

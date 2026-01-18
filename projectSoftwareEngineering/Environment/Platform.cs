@@ -23,7 +23,28 @@ namespace projectSoftwareEngineering.Environment
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Bounds, Color.Black);
+            if (texture == null) return;
+
+            int tileWidth = texture.Width;
+            int tileHeight = texture.Height;
+
+            for (int x = 0; x < Bounds.Width; x += tileWidth)
+            {
+                for (int y = 0; y < Bounds.Height; y += tileHeight)
+                {
+                    Rectangle sourceRect = new Rectangle(0, 0,
+                        Math.Min(tileWidth, Bounds.Width - x),
+                        Math.Min(tileHeight, Bounds.Height - y));
+
+                    Rectangle destRect = new Rectangle(
+                        Bounds.X + x,
+                        Bounds.Y + y,
+                        sourceRect.Width,
+                        sourceRect.Height);
+
+                    spriteBatch.Draw(texture, destRect, sourceRect, Color.White);
+                }
+            }
         }
 
         public void Update(GameTime gametime)
