@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Characters.Enemies.JumpingEnemy;
 using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
+using projectSoftwareEngineering.Characters.Enemies.WalkingEnemy;
 using projectSoftwareEngineering.Environment;
 using System;
 using System.Collections.Generic;

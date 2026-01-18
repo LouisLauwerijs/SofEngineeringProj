@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using projectSoftwareEngineering.Characters;
 using projectSoftwareEngineering.Characters.Enemies;
 using projectSoftwareEngineering.Characters.Enemies.ShooterEnemy;
+using projectSoftwareEngineering.Characters.Hero;
 using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;
@@ -185,6 +185,17 @@ namespace projectSoftwareEngineering
                 _hero.Update(gameTime, _collidables);
                 _camera.Follow(_hero.Bounds.Center.ToVector2());
 
+                var damageableEnemies = _enemies.Cast<IDamageable>().ToList();
+                _hero.CheckAttackCollisions(damageableEnemies);
+
+                foreach (var collidable in _collidables)
+                {
+                    if (collidable is IGameObject gameObject)
+                    {
+                        gameObject.Update(gameTime);
+                    }
+                }
+
                 foreach (var collidable in _collidables)
                 {
                     if (collidable is IGameObject gameObject)
@@ -365,6 +376,7 @@ namespace projectSoftwareEngineering
                 }
                 //Draw hero
                 _hero.Draw(_spriteBatch);
+                _hero.DrawDebug(_spriteBatch, _debugTexture);
 
                 _spriteBatch.End();
 

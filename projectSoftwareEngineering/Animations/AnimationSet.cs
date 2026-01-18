@@ -12,5 +12,6 @@ namespace projectSoftwareEngineering.Animations
         public Animation Run { get; set; }
         public Animation Jump { get; set; }
         public Animation Die { get; set; }
+        public Animation Attack { get; set; }
     }
 }

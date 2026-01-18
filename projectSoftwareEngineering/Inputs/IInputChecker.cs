@@ -11,5 +11,6 @@ namespace projectSoftwareEngineering.Inputs
         bool IsMovingRight();
         bool IsMovingLeft();
         bool IsJumping();
+        bool IsAttacking();
     }
 }

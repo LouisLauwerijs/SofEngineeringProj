@@ -1,4 +1,5 @@
 ﻿using projectSoftwareEngineering.Interfaces;
+using HeroClass = projectSoftwareEngineering.Characters.Hero.Hero;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace projectSoftwareEngineering.Characters.Enemies.ShooterEnemy
                     {
                         target.Health.TakeDamage();
 
-                        if (target is Hero hero)
+                        if (target is HeroClass hero)
                         {
                             float knockbackDirection = projectile.Bounds.Center.X < hero.Bounds.Center.X ? 1 : -1;
                             hero.ApplyKnockback(knockbackDirection);

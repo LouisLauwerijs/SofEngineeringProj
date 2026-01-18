@@ -49,6 +49,14 @@ namespace projectSoftwareEngineering.Animations
                 currentAnimation = animations.Die;
             }
         }
+        public void AttackAnimation()
+        {
+            if (currentAnimation != animations.Attack)
+            {
+                currentAnimation = animations.Attack;
+                currentAnimation.Reset();
+            }
+        }
 
         public Rectangle GetCurrentFrameRectangle()
         {

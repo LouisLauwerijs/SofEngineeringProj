@@ -23,5 +23,10 @@ namespace projectSoftwareEngineering.Inputs
         {
             return Keyboard.GetState().IsKeyDown(Keys.Space);
         }
+
+        public bool IsAttacking()
+        {
+            return Keyboard.GetState().IsKeyDown(Keys.J);
+        }
     }
 }

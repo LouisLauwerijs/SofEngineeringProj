@@ -5,7 +5,7 @@ using projectSoftwareEngineering.Systems;
 using System;
 using System.Collections.Generic;
 
-namespace projectSoftwareEngineering.Characters.Enemies
+namespace projectSoftwareEngineering.Characters.Enemies.JumpingEnemy
 {
     public class JumpingEnemy : Enemy
     {

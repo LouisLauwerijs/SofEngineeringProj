@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using projectSoftwareEngineering.Characters;
 using projectSoftwareEngineering.Characters.Enemies;
+using projectSoftwareEngineering.Characters.Hero;
 using projectSoftwareEngineering.Environment;
 using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;

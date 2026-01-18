@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace projectSoftwareEngineering.Characters.Enemies
+namespace projectSoftwareEngineering.Characters.Enemies.WalkingEnemy
 {
-    public class JumpingEnemyConfig: ICharacterConfig
+    internal class WalkingEnemyConfig : ICharacterConfig
     {
         private Vector2 _spawnPoint;
 
-        public JumpingEnemyConfig(Vector2 spawnPoint)
+        public WalkingEnemyConfig(Vector2 spawnPoint)
         {
             _spawnPoint = spawnPoint;
         }
@@ -21,8 +21,8 @@ namespace projectSoftwareEngineering.Characters.Enemies
 
         public float Gravity => 0.4f;
 
-        public float JumpStrength => -8.5f;
+        public float JumpStrength => 0f;
 
-        public float MoveSpeed => 1.5f;
+        public float MoveSpeed => 0.75f;
     }
 }

@@ -16,7 +16,8 @@ namespace projectSoftwareEngineering.Animations
                 Idle = BuildIdleAnimation(),
                 Run = BuildRunAnimation(),
                 Jump = BuildJumpAnimation(),
-                Die = BuildDeathAnimation()
+                Die = BuildDeathAnimation(),
+                Attack = BuildAttackAnimation()                
             };
         }
 
@@ -77,5 +78,16 @@ namespace projectSoftwareEngineering.Animations
             animation.Loop = false;
             return animation;
         }
+        private static Animation BuildAttackAnimation()
+        {
+            Animation animation = new Animation();
+            animation.AddFrame(new AnimationFrame(new Rectangle(0, 192, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(64, 192, 64, 64)));
+            animation.AddFrame(new AnimationFrame(new Rectangle(128, 192, 64, 64)));
+            animation.Loop = false;
+            animation.FrameInterval = 60;
+            return animation;
+        }
+
     }
 }

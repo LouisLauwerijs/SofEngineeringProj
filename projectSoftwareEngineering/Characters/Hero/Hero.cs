@@ -7,7 +7,7 @@ using projectSoftwareEngineering.Inputs;
 using projectSoftwareEngineering.Interfaces;
 using projectSoftwareEngineering.Systems;
 
-namespace projectSoftwareEngineering.Characters
+namespace projectSoftwareEngineering.Characters.Hero
 {
     public class Hero : IGameObject, ICollidable, IDamageable, ITargetable
     {
@@ -16,6 +16,7 @@ namespace projectSoftwareEngineering.Characters
         public Physics _physics;
         private AnimationController _animationController;
         private CollisionManager _collisionManager;
+        private MeleeAttack _meleeAttack;
 
         private SpriteEffects _direction = SpriteEffects.None;
 
@@ -37,7 +38,6 @@ namespace projectSoftwareEngineering.Characters
             _inputHandler = inputHandler;
             _collisionManager = collisionManager;
 
-            // Create components with injected configuration
             _physics = new Physics(
                 config.StartPosition,
                 config.Gravity,
@@ -46,7 +46,7 @@ namespace projectSoftwareEngineering.Characters
             );
 
             _animationController = new AnimationController(AnimationFactory.CreateHeroAnimations());
-
+            _meleeAttack = new MeleeAttack(heroWidth: 28, cooldownDuration: 0.5f, attackDuration: 0.18f);
             Health = new Health(3);
         }
 
@@ -57,7 +57,7 @@ namespace projectSoftwareEngineering.Characters
                 _knockbackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             HandleMovement();
-
+            HandleAttack();
             _physics.ApplyGravity();
 
             _physics.UpdateVerticalPosition();
@@ -72,6 +72,7 @@ namespace projectSoftwareEngineering.Characters
 
             UpdateAnimation();
             _animationController.Update(gameTime);
+            _meleeAttack.Update(gameTime);
             Health.VulnerableUpdate(gameTime);
         }
         public void Update(GameTime gameTime)
@@ -131,10 +132,36 @@ namespace projectSoftwareEngineering.Characters
             }
         }
 
+        private void HandleAttack()
+        {
+            if (isDead || _knockbackTimer > 0)
+                return;
+
+            if(_inputHandler.IsAttacking() && _meleeAttack.CanAttack)
+            {
+                bool facingRight = _direction == SpriteEffects.None;
+                _meleeAttack.Execute(new Vector2(Bounds.X, Bounds.Y), facingRight);
+            }
+        }
+        public void CheckAttackCollisions(List<IDamageable> targets)
+        {
+            var hitTargets = _meleeAttack.CheckCollisions(targets);
+            foreach (var target in hitTargets)
+            {
+                target.Health.TakeDamage();
+            }
+        }
+
         private void UpdateAnimation()
         {
             if (isDead)
                 return;
+
+            if (_meleeAttack.IsActive)
+            {
+                _animationController.AttackAnimation();
+                return;
+            }
 
             if (!_physics.IsGrounded)
             {
@@ -153,6 +180,16 @@ namespace projectSoftwareEngineering.Characters
             _knockbackTimer = 0.5f;
             Console.WriteLine($"Knockback applied! Timer: {_knockbackTimer}");
             _physics.Position += new Vector2(direction * 15, 0);
+        }
+
+        public void DrawDebug(SpriteBatch spriteBatch, Texture2D debugTexture)
+        {
+            // Draw attack hitbox in red when active
+            if (_meleeAttack.IsActive)
+            {
+                Rectangle hitbox = _meleeAttack.Hitbox;
+                spriteBatch.Draw(debugTexture, hitbox, Color.Red * 0.5f);
+            }
         }
     }
 }
