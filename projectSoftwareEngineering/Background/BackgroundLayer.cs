@@ -22,7 +22,7 @@ namespace projectSoftwareEngineering.Background
         public void Draw(SpriteBatch spriteBatch, Vector2 cameraPosition, int screenWidth, int screenHeight)
         {
             // Safety checks
-            if (_texture == null || _texture.Width <= 0 || _texture.Height <= 0)
+            if (_texture == null || _texture.Width == 0 || _texture.Height == 0)
                 return;
 
             // Calculate parallax offset

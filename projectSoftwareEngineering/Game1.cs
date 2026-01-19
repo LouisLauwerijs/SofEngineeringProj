@@ -117,7 +117,9 @@ namespace projectSoftwareEngineering
 
         protected override void LoadContent()
         {
-            //Backgrounds
+            _debugTexture = CreateColoredTexture(Color.White);
+
+            ////Backgrounds
             _backgroundManager = new BackgroundManager(RENDER_WIDTH, RENDER_HEIGHT);
 
             Texture2D bg1 = Content.Load<Texture2D>("bg1");
@@ -127,14 +129,12 @@ namespace projectSoftwareEngineering
             Texture2D bg5 = Content.Load<Texture2D>("bg5");
             Texture2D bg6 = Content.Load<Texture2D>("bg6");
 
-            _backgroundManager.AddLayer(bg1, 0.1f);  
-            _backgroundManager.AddLayer(bg2, 0.2f);
-            _backgroundManager.AddLayer(bg3, 0.3f);
-            _backgroundManager.AddLayer(bg4, 0.4f);
-            _backgroundManager.AddLayer(bg5, 0.5f);
-            _backgroundManager.AddLayer(bg6, 0.6f);
-
-
+            _backgroundManager.AddLayer(bg1, 0.0f);
+            _backgroundManager.AddLayer(bg2, 0.003f);
+            _backgroundManager.AddLayer(bg3, 0.03f);
+            _backgroundManager.AddLayer(bg4, 0.05f);
+            _backgroundManager.AddLayer(bg5, 0.06f);
+            _backgroundManager.AddLayer(bg6, 0.09f);
 
             _renderTarget = new RenderTarget2D(GraphicsDevice, RENDER_WIDTH, RENDER_HEIGHT);
 

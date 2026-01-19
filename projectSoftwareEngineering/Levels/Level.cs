@@ -35,7 +35,7 @@ namespace projectSoftwareEngineering.Levels
         protected Texture2D _shooterEnemyAttackTexture;
         protected Texture2D _shooterEnemyDieTexture;
         protected Texture2D _spikeTexture;
-        protected Texture2D _cointTexture;
+        protected Texture2D _coinTexture;
 
         public Hero Hero { get; set; }
         public Camera Camera { get; set; }
@@ -63,7 +63,7 @@ namespace projectSoftwareEngineering.Levels
             _shooterEnemyAttackTexture = config.ShooterEnemyAttackTexture;
             _shooterEnemyDieTexture = config.ShooterEnemyDieTexture;
             _spikeTexture = config.SpikeTexture;
-            _cointTexture = config.CoinTexture;
+            _coinTexture = config.CoinTexture;
         }
 
         public void Load(CollisionManager collisionManager)

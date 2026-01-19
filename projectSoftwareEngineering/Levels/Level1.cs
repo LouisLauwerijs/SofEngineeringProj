@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using projectSoftwareEngineering.Characters.Enemies.JumpingEnemy;
 using projectSoftwareEngineering.Characters.Enemies.WalkingEnemy;
 using projectSoftwareEngineering.Environment;
 using System;
@@ -17,53 +18,78 @@ namespace projectSoftwareEngineering.Levels
 
         public override void BuildLevel()
         {
-            // Floors
-            Floor floor = new Floor(_floorTexture, 0, _screenHeight - 15, 250, 30);
-            Collidables.Add(floor);
-            Floor floor2 = new Floor(_floorTexture, 300, _screenHeight - 15, 500, 30);
+            int groundY = _screenHeight - 15;
+
+            //Floors
+            Floor floor1 = new Floor(_floorTexture, 0, groundY, 400, 30);
+            Collidables.Add(floor1);
+            Floor floor2 = new Floor(_floorTexture, 450, groundY, 350, 30);
             Collidables.Add(floor2);
-            Floor floor3 = new Floor(_floorTexture, 550, _screenHeight - 15, 800, 30);
+            Floor floor3 = new Floor(_floorTexture, 850, groundY, 500, 30);
             Collidables.Add(floor3);
-            Floor floor4 = new Floor(_floorTexture, 850, _screenHeight - 15, 1600, 30);
+            Floor floor4 = new Floor(_floorTexture, 1400, groundY, 600, 30);
             Collidables.Add(floor4);
-            Floor floor5 = new Floor(_floorTexture, 1800, _screenHeight - 15, 2000, 30);
-            Collidables.Add(floor5);
 
-
-            // Platforms
-            Platform platform1 = new Platform(_platformTexture, 80, _screenHeight - 80, 50, 15);
-            Collidables.Add(platform1);
-
-            Platform platform2 = new Platform(_platformTexture, 220, _screenHeight - 130, 50, 15);
-            Collidables.Add(platform2);
-
-            Platform platform3 = new Platform(_platformTexture, 360, _screenHeight - 180, 50, 15);
-            Collidables.Add(platform3);
-
-            // Walls
-            Floor leftWall = new Floor(_wallTexture, -155, 0, 160, _screenHeight);
+           //Walls
+            Floor leftWall = new Floor(_wallTexture, -200, 0, 200, _screenHeight);
             Collidables.Add(leftWall);
 
-            // Enemy with platform
-            WalkingEnemy enemy1 = new WalkingEnemy(
-                _walkingEnemyWalkTexture,  
-                _walkingEnemyDieTexture,  
-                new Vector2(300, 100),     
+            Floor rightWall = new Floor(_wallTexture, 2000, 0, 200, _screenHeight);
+            Collidables.Add(rightWall);
+
+
+            //Platforms
+            Platform platform1 = new Platform(_platformTexture, 410, groundY - 60, 60, 15);
+            Collidables.Add(platform1);
+
+            Platform platform2 = new Platform(_platformTexture, 950, groundY - 80, 80, 15);
+            Collidables.Add(platform2);
+
+            Platform platform3 = new Platform(_platformTexture, 1320, groundY - 50, 60, 15);
+            Collidables.Add(platform3);
+
+            //Enemies
+            WalkingEnemy walker1 = new WalkingEnemy(
+                _walkingEnemyWalkTexture,
+                _walkingEnemyDieTexture,
+                new Vector2(300, groundY - 50)
+            );
+            Enemies.Add(walker1);
+
+            WalkingEnemy walker2 = new WalkingEnemy(
+                _walkingEnemyWalkTexture,
+                _walkingEnemyDieTexture,
+                new Vector2(1000, groundY - 50)
+            );
+            Enemies.Add(walker2);
+
+            WalkingEnemy walker3 = new WalkingEnemy(
+                _walkingEnemyWalkTexture,
+                _walkingEnemyDieTexture,
+                new Vector2(1600, groundY - 50)
+            );
+            Enemies.Add(walker3);
+
+            JumpingEnemy jumper1 = new JumpingEnemy(
+                _jumpingEnemyJumpTexture,
+                _jumpingEnemyDieTexture,
+                _jumpingEnemyIdleTexture,
+                new Vector2(1200, groundY - 50),
                 1
             );
-            Enemies.Add(enemy1);
-            Platform enemyPlatform = new Platform(_platformTexture, 300, 200, 80, 15);
-            Collidables.Add(enemyPlatform);
+            Enemies.Add(jumper1);
+            JumpingEnemy jumper2 = new JumpingEnemy(
+                _jumpingEnemyJumpTexture,
+                _jumpingEnemyDieTexture,
+                _jumpingEnemyIdleTexture,
+                new Vector2(1800, groundY - 50),
+                1
+            );
+            Enemies.Add(jumper2);
 
-            // Spike hazard
-            Spike spike = new Spike(_spikeTexture, 180, _screenHeight - 35, 20, 20);
-            Spikes.Add(spike);
-            Collidables.Add(spike);
 
-
-
-            //Completion coin
-            Coin coin = new Coin(_cointTexture, 1800, _screenHeight - 50, 25, 25);
+            //End coin
+            Coin coin = new Coin(_coinTexture, 1950, groundY - 50, 25, 25);
             Collectibles.Add(coin);
         }
     }
