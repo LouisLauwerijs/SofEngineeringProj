@@ -23,6 +23,8 @@ namespace projectSoftwareEngineering.Levels
                     return new Level1(_config);
                 case 2:
                     return new Level2(_config);
+                case 3:
+                    return new Level3(_config);
                 default:
                     return new Level1(_config);
             }
