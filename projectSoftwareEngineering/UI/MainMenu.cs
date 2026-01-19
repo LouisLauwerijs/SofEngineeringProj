@@ -15,7 +15,7 @@ namespace projectSoftwareEngineering.UI
         private SpriteFont _buttonFont;
         private Texture2D _buttonTexture;
         private List<MenuButton> _levelButtons;
-        private string _title = "TEMP NAME";
+        private string _title = "Samurai Jumper";
 
         private int _screenWidth;
         private int _screenHeight;
